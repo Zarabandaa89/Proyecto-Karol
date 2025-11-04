@@ -141,6 +141,8 @@ include("includes/conexion.php");
     </div>
   </section>
 
+  
+
   <!-- CARRITO -->
   <div class="cart-overlay" id="cartOverlay"></div>
   <aside class="cart-sidebar" id="cartSidebar">
