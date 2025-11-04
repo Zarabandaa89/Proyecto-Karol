@@ -6,7 +6,6 @@
   <title>Iniciar Sesión | Chic Royale</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css\inicio-sesion.css">
-
 </head>
 <body>
   <header>
@@ -22,7 +21,7 @@
   </header>
 
   <div class="login-container">
-    <div class="login-box">
+    <div class="login-box" id="loginBox">
       <div class="login-header">
         <i class="fa-solid fa-user-circle"></i>
         <h1>¡Bienvenida de nuevo! 💄</h1>
@@ -53,16 +52,39 @@
             <input type="checkbox" id="remember">
             <span>Recordarme</span>
           </label>
-          <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+          <a href="#" class="forgot-password" id="forgotPassword">¿Olvidaste tu contraseña?</a>
         </div>
 
-        <button type="submit" class="login-btn">
-          Iniciar Sesión
-        </button>
+        <button type="submit" class="login-btn">Iniciar Sesión</button>
       </form>
 
       <div class="signup-link">
         ¿No tienes cuenta? <a href="Registro.php">Regístrate aquí</a>
+      </div>
+    </div>
+
+    <!-- Formulario de Recuperación de Contraseña -->
+    <div class="login-box" id="recoverBox" style="display:none;">
+      <div class="login-header">
+        <i class="fa-solid fa-lock"></i>
+        <h1>Recuperar Contraseña</h1>
+        <p>Ingresa tu correo electrónico para restablecer tu contraseña</p>
+      </div>
+
+      <form id="recoverForm">
+        <div class="form-group">
+          <label for="recoverEmail">Correo Electrónico</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-envelope"></i>
+            <input type="email" id="recoverEmail" placeholder="tu@email.com" required>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">Enviar enlace de recuperación</button>
+      </form>
+
+      <div class="back-to-login">
+        <a href="#" id="backToLogin">Volver al inicio de sesión</a>
       </div>
     </div>
   </div>
@@ -74,7 +96,13 @@
   <script>
     const loginForm = document.getElementById('loginForm');
     const messageDiv = document.getElementById('message');
+    const forgotPasswordLink = document.getElementById('forgotPassword');
+    const recoverBox = document.getElementById('recoverBox');
+    const loginBox = document.getElementById('loginBox');
+    const recoverForm = document.getElementById('recoverForm');
+    const backToLoginLink = document.getElementById('backToLogin');
 
+    // Función para mostrar mensajes de error o éxito
     function showMessage(text, type) {
       messageDiv.textContent = text;
       messageDiv.className = 'message ' + type + ' show';
@@ -83,63 +111,102 @@
       }, 4000);
     }
 
+    // Iniciar sesión
     loginForm.addEventListener('submit', function(e) {
-  e.preventDefault();
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
 
-  const email = document.getElementById('email').value.trim();
-  const password = document.getElementById('password').value;
-  const remember = document.getElementById('remember').checked;
+      if (!email || !password) {
+        showMessage('❌ Por favor completa todos los campos', 'error');
+        return;
+      }
 
-  if (!email || !password) {
-    showMessage('❌ Por favor completa todos los campos', 'error');
-    return;
-  }
+      let users = [];
+      try {
+        users = JSON.parse(localStorage.getItem('users')) || [];
+      } catch (error) {
+        users = [];
+      }
 
-  let users = [];
-  try {
-    users = JSON.parse(localStorage.getItem('users')) || [];
-  } catch (error) {
-    users = [];
-  }
+      const user = users.find(function(u) {
+        return u.email.toLowerCase() === email.toLowerCase() && u.password === password;
+      });
 
-  const user = users.find(function(u) {
-    return u.email.toLowerCase() === email.toLowerCase() && u.password === password;
-  });
+      if (user) {
+        const currentUser = {
+          name: user.name,
+          email: user.email,
+          phone: user.phone || ''
+        };
 
-  if (user) {
-    const currentUser = {
-      name: user.name,
-      email: user.email,
-      phone: user.phone || ''
-    };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
 
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        if (remember) {
+          localStorage.setItem('rememberUser', 'true');
+        }
 
-    if (remember) {
-      localStorage.setItem('rememberUser', 'true');
-    }
+        if (email.toLowerCase() === "admin@chicroyale.com") {
+          showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo al panel de administración...', 'success');
+          setTimeout(function() {
+            window.location.href = 'admin.php'; 
+          }, 1500);
+        } else {
+          showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo al inicio...', 'success');
+          setTimeout(function() {
+            window.location.href = 'index.php'; 
+          }, 1500);
+        }
+      } else {
+        showMessage('❌ Correo o contraseña incorrectos', 'error');
+      }
+    });
 
-    if (email.toLowerCase() === "admin@chicroyale.com") {
-      showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo al panel de administración...', 'success');
-      setTimeout(function() {
-        window.location.href = 'admin.php'; 
-      }, 1500);
-    } else {
-      showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo al inicio...', 'success');
-      setTimeout(function() {
-        window.location.href = 'index.php'; 
-      }, 1500);
-    }
-  } else {
-    showMessage('❌ Correo o contraseña incorrectos', 'error');
-  }
-});
+    // Mostrar el formulario de recuperación de contraseña
+    forgotPasswordLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      loginBox.style.display = 'none';  // Ocultar el formulario de inicio de sesión
+      recoverBox.style.display = 'block';  // Mostrar el formulario de recuperación
+    });
 
+    // Volver al inicio de sesión
+    backToLoginLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      recoverBox.style.display = 'none';  // Ocultar el formulario de recuperación
+      loginBox.style.display = 'block';  // Volver al formulario de inicio de sesión
+    });
 
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-      window.location.href = 'index.php';
-    }
+    // Recuperación de contraseña
+    recoverForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const recoverEmail = document.getElementById('recoverEmail').value.trim();
+
+      if (!recoverEmail) {
+        showMessage('❌ Por favor ingresa un correo electrónico', 'error');
+        return;
+      }
+
+      let users = [];
+      try {
+        users = JSON.parse(localStorage.getItem('users')) || [];
+      } catch (error) {
+        users = [];
+      }
+
+      const user = users.find(function(u) {
+        return u.email.toLowerCase() === recoverEmail.toLowerCase();
+      });
+
+      if (user) {
+        showMessage('✅ Hemos enviado un enlace para restablecer tu contraseña al correo.', 'success');
+        // Aquí puedes simular un enlace que el usuario podrá utilizar para restablecer su contraseña
+        // En un escenario real, enviarías un email con un enlace de recuperación.
+      } else {
+        showMessage('❌ No hemos encontrado un usuario con ese correo electrónico.', 'error');
+      }
+    });
   </script>
 </body>
 </html>

@@ -61,7 +61,6 @@ include "includes/conexion.php";
               </div>
             </div>
 
-            <!-- Usuario autenticado -->
             <div class="user-profile" id="userProfile">
               <div class="dropdown-header">
                 <i class="fa-solid fa-user-circle"></i>
@@ -96,7 +95,6 @@ include "includes/conexion.php";
     </div>
   </header>
 
-  <!-- Carrito -->
   <section class="productos-container">
     <div class="productos-grid" id="productosGrid"></div>
   </section>
@@ -127,7 +125,6 @@ include "includes/conexion.php";
     </div>
   </aside>
 
-  <!-- 🌸 HERO -->
   <section class="hero-banner">
     <div class="floating-elements">
       <span>💄</span>
@@ -145,7 +142,6 @@ include "includes/conexion.php";
     </div>
   </section>
 
-  <!-- CATEGORÍAS -->
   <section class="categorias-section">
     <h2 class="titulo-categorias">💄 Elige una categoría 💋</h2>
 
@@ -185,7 +181,7 @@ include "includes/conexion.php";
 
     <div class="productos-grid">
       <?php
-      $sqlDest = "SELECT * FROM productos WHERE destacado = 1";
+      $sqlDest = "SELECT * FROM productos_1 WHERE destacado = 1";
       $destacados = $conexion->query($sqlDest);
 
       if ($destacados->num_rows > 0) {
@@ -193,10 +189,10 @@ include "includes/conexion.php";
           echo '
           <div class="producto">
             <div class="producto-imagen">
-              <img src="uploads/' . $p['imagen'] . '" alt="' . $p['nombre'] . '">
+              <img src="uploads/' . $p['imagen'] . '" alt="' . $p['nombre_producto'] . '">
             </div>
 
-            <h3>' . $p['nombre'] . '</h3>
+            <h3>' . $p['nombre_producto'] . '</h3>
             <p class="producto-precio">$' . number_format($p['precio'], 0, ',', '.') . '</p>
 
             <button class="producto-btn add-to-cart" data-id="' . $p['id'] . '">
@@ -258,27 +254,27 @@ include "includes/conexion.php";
 
     checkLoginStatus();
   </script>
-  <script>
-  const productos = [
-    <?php
-    $destacados->data_seek(0);
-
-    while ($p = $destacados->fetch_assoc()) {
-      echo "{
-        id: ".$p['id'].",
-        nombre: '".addslashes($p['nombre'])."',
-        precio: ".$p['precio'].",
-        descripcion: '".addslashes($p['descripcion'])."',
-        imagen: 'uploads/".$p['imagen']."',
-        categoria: '".$p['categoria']."'
-      },";
-    }
-    ?>
-  ];
+<script>
+const productos = [
+  <?php
+  $destacados->data_seek(0);
+  while ($p = $destacados->fetch_assoc()) {
+    echo "{
+      id: ".$p['id'].",
+      nombre: '".addslashes($p['nombre_producto'])."',
+      precio: ".$p['precio'].",
+      descripcion: '".addslashes($p['descripcion'])."',
+      imagen: 'uploads/".$p['imagen']."',
+      categoria: '".$p['categoria']."'
+    },";
+  }
+  ?>
+];
 </script>
 
+
 <script>
-document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+document.querySelectorAll(".add-to-cart").forEach(btn => {
   btn.addEventListener("click", () => {
     const id = parseInt(btn.dataset.id);
     addToCart(id);

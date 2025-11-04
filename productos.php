@@ -109,7 +109,7 @@ include("includes/conexion.php");
   <section class="productos-container">
     <div class="productos-grid" id="productosGrid">
       <?php
-      $sql = "SELECT * FROM productos";
+      $sql = "SELECT * FROM productos_1";
       $resultado = $conexion->query($sql);
 
       if ($resultado->num_rows > 0) {
@@ -118,11 +118,11 @@ include("includes/conexion.php");
           <div class="producto-card" data-categoria="'.$producto['categoria'].'">
             '.(!empty($producto['badge']) ? '<span class="producto-badge">'.$producto['badge'].'</span>' : '').'
             <div class="producto-imagen">
-              <img src="uploads/'.$producto['imagen'].'" alt="'.$producto['nombre'].'">
+              <img src="uploads/'.$producto['imagen'].'" alt="'.$producto['nombre_producto'].'">
             </div>
             <div class="producto-info">
               <div class="producto-categoria">'.ucfirst($producto['categoria']).'</div>
-              <div class="producto-nombre">'.$producto['nombre'].'</div>
+              <div class="producto-nombre">'.$producto['nombre_producto'].'</div>
               <div class="producto-descripcion">'.$producto['descripcion'].'</div>
               <div class="producto-footer">
                 <div class="producto-precio">$'.number_format($producto['precio'], 0, ',', '.').'</div>
@@ -237,23 +237,24 @@ include("includes/conexion.php");
   checkLoginStatus();
   </script>
   <script>
-  const productos = [
-    <?php
-    $resultado->data_seek(0);
+const productos = [
+  <?php
+  $resultado->data_seek(0);
 
-    while ($producto = $resultado->fetch_assoc()) {
-      echo "{
-        id: ".$producto['id'].",
-        nombre: '".addslashes($producto['nombre'])."',
-        descripcion: '".addslashes($producto['descripcion'])."',
-        precio: ".$producto['precio'].",
-        imagen: 'uploads/".$producto['imagen']."',
-        categoria: '".$producto['categoria']."'
-      },";
-    }
-    ?>
-  ];
+  while ($producto = $resultado->fetch_assoc()) {
+    echo "{
+      id: ".$producto['id'].",
+      nombre: '".addslashes($producto['nombre_producto'])."',
+      descripcion: '".addslashes($producto['descripcion'])."',
+      precio: ".$producto['precio'].",
+      imagen: 'uploads/".$producto['imagen']."',
+      categoria: '".$producto['categoria']."'
+    },";
+  }
+  ?>
+];
 </script>
+
 <script>
 document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
   btn.addEventListener("click", () => {

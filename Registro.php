@@ -11,7 +11,7 @@
   <header>
     <div class="barra-superior">
       <div class="logo">
-        <a href="index.html">◉ Chic Royale</a>
+        <a href="index.php">◉ Chic Royale</a>
       </div>
       <a href="index.php" class="back-btn">
         <i class="fa-solid fa-arrow-left"></i>
