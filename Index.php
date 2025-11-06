@@ -1,6 +1,8 @@
 <?php
+session_start();
 include "includes/conexion.php";
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -16,7 +18,7 @@ include "includes/conexion.php";
   <header>
     <div class="barra-superior">
       <div class="logo">
-        <div class="logo-icon">💄</div> 
+        <div class="logo-icon">💄</div>
         <a href="index.php">Chic Royale</a>
       </div>
 
@@ -35,62 +37,45 @@ include "includes/conexion.php";
           <span class="cart-badge" id="cartCount">0</span>
         </button>
 
-        <div class="user-menu">
-          <div class="user-toggle" id="userToggle">
-            <i class="fa-solid fa-user"></i>
-          </div>
+       <div class="user-menu">
+  <div class="user-toggle" id="userToggle">
+    <i class="fa-solid fa-user"></i>
+  </div>
 
-          <div class="dropdown-menu" id="dropdownMenu">
-
-            <div class="guest-links" id="guestLinks">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3>Bienvenido</h3>
-                <p>Inicia sesión o regístrate</p>
-              </div>
-
-              <div class="dropdown-links">
-                <a href="login.php">
-                  <i class="fa-solid fa-right-to-bracket"></i>
-                  <span>Iniciar Sesión</span>
-                </a>
-                <a href="Registro.php">
-                  <i class="fa-solid fa-user-plus"></i>
-                  <span>Registrarse</span>
-                </a>
-              </div>
-            </div>
-
-            <div class="user-profile" id="userProfile">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3 id="userName">Usuario</h3>
-                <p id="userEmail">email@ejemplo.com</p>
-              </div>
-
-              <div class="dropdown-links">
-                <a href="perfil.html">
-                  <i class="fa-solid fa-user"></i>
-                  <span>Mi Perfil</span>
-                </a>
-                <a href="pedidos.html">
-                  <i class="fa-solid fa-box"></i>
-                  <span>Mis Pedidos</span>
-                </a>
-                <a href="favoritos.html">
-                  <i class="fa-solid fa-heart"></i>
-                  <span>Favoritos</span>
-                </a>
-                <a href="#" id="logoutBtn">
-                  <i class="fa-solid fa-right-from-bracket"></i>
-                  <span>Cerrar Sesión</span>
-                </a>
-              </div>
-            </div>
-
-          </div>
+  <div class="dropdown-menu" id="dropdownMenu">
+    <?php if (isset($_SESSION['usuario_id'])): ?>
+      <!-- Si el usuario ha iniciado sesión -->
+      <div class="user-profile active" id="userProfile">
+        <div class="dropdown-header">
+          <i class="fa-solid fa-user-circle"></i>
+          <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
+          <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
         </div>
 
+        <div class="dropdown-links">
+          <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
+          <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
+          <a href="favoritos.php"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
+          <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+        </div>
+      </div>
+    <?php else: ?>
+      <!-- Si NO hay sesión -->
+      <div class="guest-links" id="guestLinks">
+        <div class="dropdown-header">
+          <i class="fa-solid fa-user-circle"></i>
+          <h3>Bienvenido</h3>
+          <p>Inicia sesión o regístrate</p>
+        </div>
+
+        <div class="dropdown-links">
+          <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
+          <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+        </div>
+      </div>
+    <?php endif; ?>
+  </div>
+</div>
       </div>
     </div>
   </header>
@@ -144,33 +129,21 @@ include "includes/conexion.php";
 
   <section class="categorias-section">
     <h2 class="titulo-categorias">💄 Elige una categoría 💋</h2>
-
     <div class="categorias">
       <div class="categoria">
-        <div class="categoria-imagen">
-          <img src="imagenes/Labios.png" alt="Labios">
-        </div>
+        <div class="categoria-imagen"> <img src="imagenes/Labios.png" alt="Labios" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-lips\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
         <p>Labios</p>
       </div>
-
       <div class="categoria">
-        <div class="categoria-imagen">
-          <img src="imagenes/Ojos.png" alt="Ojos">
-        </div>
+        <div class="categoria-imagen"> <img src="imagenes/Ojos.png" alt="Ojos" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-eye\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
         <p>Ojos</p>
       </div>
-
       <div class="categoria">
-        <div class="categoria-imagen">
-          <img src="imagenes/Piel.png" alt="Piel">
-        </div>
+        <div class="categoria-imagen"> <img src="imagenes/Piel.png" alt="Piel" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-spa\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
         <p>Piel</p>
       </div>
-
       <div class="categoria">
-        <div class="categoria-imagen">
-          <img src="imagenes/Mejillas.png" alt="Mejillas">
-        </div>
+        <div class="categoria-imagen"> <img src="imagenes/Mejillas.png" alt="Mejillas" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-face-smile\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
         <p>Mejillas</p>
       </div>
     </div>
@@ -182,7 +155,7 @@ include "includes/conexion.php";
     <div class="productos-grid">
       <?php
       $sqlDest = "SELECT * FROM productos_1 WHERE destacado = 1";
-      $destacados = $conexion->query($sqlDest);
+      $destacados = $conn->query($sqlDest);
 
       if ($destacados->num_rows > 0) {
         while ($p = $destacados->fetch_assoc()) {
@@ -229,58 +202,55 @@ include "includes/conexion.php";
       }
     });
 
-    function checkLoginStatus() {
-      const user = JSON.parse(localStorage.getItem('currentUser'));
-      if (user) {
-        guestLinks.classList.add('hidden');
-        userProfile.classList.add('active');
-        document.getElementById('userName').textContent = user.name || 'Usuario';
-        document.getElementById('userEmail').textContent = user.email || '';
-      } else {
-        guestLinks.classList.remove('hidden');
-        userProfile.classList.remove('active');
-      }
-    }
 
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('currentUser');
-        checkLoginStatus();
-        dropdownMenu.classList.remove('open');
-        alert('Has cerrado sesión correctamente');
-      });
-    }
-
-    checkLoginStatus();
   </script>
-<script>
-const productos = [
-  <?php
-  $destacados->data_seek(0);
-  while ($p = $destacados->fetch_assoc()) {
-    echo "{
-      id: ".$p['id'].",
-      nombre: '".addslashes($p['nombre_producto'])."',
-      precio: ".$p['precio'].",
-      descripcion: '".addslashes($p['descripcion'])."',
-      imagen: 'uploads/".$p['imagen']."',
-      categoria: '".$p['categoria']."'
+  <script>
+    const productos = [
+      <?php
+      $destacados->data_seek(0);
+      while ($p = $destacados->fetch_assoc()) {
+        echo "{
+      id: " . $p['id'] . ",
+      nombre: '" . addslashes($p['nombre_producto']) . "',
+      precio: " . $p['precio'] . ",
+      descripcion: '" . addslashes($p['descripcion']) . "',
+      imagen: 'uploads/" . $p['imagen'] . "',
+      categoria: '" . $p['categoria'] . "'
     },";
-  }
-  ?>
-];
-</script>
+      }
+      ?>
+    ];
+  </script>
 
 
-<script>
-document.querySelectorAll(".add-to-cart").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const id = parseInt(btn.dataset.id);
-    addToCart(id);
-  });
-});
-</script>
+  <script>
+    document.querySelectorAll(".add-to-cart").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = parseInt(btn.dataset.id);
+
+        addToCart(id);
+
+        fetch("actualizar_stock.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `id=${id}`
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (!data.success) {
+              alert("⚠️ " + data.message);
+            } else {
+              console.log("Stock actualizado para producto ID " + id);
+            }
+          })
+          .catch(error => console.error("Error al actualizar stock:", error));
+      });
+    });
+  </script>
+  
+
 
 
   <script src="js/cart.js"></script>

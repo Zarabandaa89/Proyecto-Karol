@@ -110,7 +110,7 @@ include("includes/conexion.php");
     <div class="productos-grid" id="productosGrid">
       <?php
       $sql = "SELECT * FROM productos_1";
-      $resultado = $conexion->query($sql);
+      $resultado = $conn->query($sql);
 
       if ($resultado->num_rows > 0) {
         while ($producto = $resultado->fetch_assoc()) {
@@ -141,7 +141,7 @@ include("includes/conexion.php");
     </div>
   </section>
 
-  
+
 
   <!-- CARRITO -->
   <div class="cart-overlay" id="cartOverlay"></div>
@@ -262,6 +262,21 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const id = parseInt(btn.dataset.id);
     addToCart(id);
+
+    fetch("actualizar_stock.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `id=${id}`
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        alert("⚠️ " + data.message);
+      }
+    })
+    .catch(error => console.error("Error al actualizar stock:", error));
   });
 });
 </script>

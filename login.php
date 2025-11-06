@@ -9,7 +9,6 @@
 </head>
 
 <body>
-  <!-- ====== HEADER ====== -->
   <header>
     <div class="barra-superior">
       <div class="logo">
@@ -22,7 +21,6 @@
     </div>
   </header>
 
-  <!-- ====== CONTENEDOR DE LOGIN ====== -->
   <div class="login-container">
     <div class="login-box">
       <div class="login-header">
@@ -31,11 +29,8 @@
         <p>Inicia sesión para continuar</p>
       </div>
 
-      <!-- Mensaje de error/éxito -->
       <div id="message" class="message"></div>
 
-      <!-- Formulario de Login -->
-      <!-- ✅ Se agrega method="post" y action="#" -->
       <form id="loginForm" method="post" action="#">
         <div class="form-group">
           <label for="email">Correo Electrónico</label>
@@ -101,7 +96,6 @@
     © 2025 Chic Royale - Todos los derechos reservados 💄
   </footer>
 
-  <!-- 👤 Script de usuario -->
   <script>
     const userToggle = document.getElementById("userToggle");
     const dropdownMenu = document.getElementById("dropdownMenu");
@@ -148,62 +142,42 @@
     checkLoginStatus();
   </script>
 
-  <!-- 🚀 Script de Login -->
   <script>
-    const loginForm = document.getElementById('loginForm');
-    const messageDiv = document.getElementById('message');
+  const loginForm = document.getElementById('loginForm');
+  const messageDiv = document.getElementById('message');
 
-    // ✅ Función para mostrar mensajes
-    function showMessage(text, type) {
-      messageDiv.textContent = text;
-      messageDiv.className = `message ${type} show`;
-      setTimeout(() => {
-        messageDiv.classList.remove('show');
-      }, 4000);
-    }
+  function showMessage(text, type) {
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${type} show`;
+    setTimeout(() => messageDiv.classList.remove('show'), 4000);
+  }
 
-    // ✅ Manejar el envío del formulario
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Evita que se recargue la página o se agreguen parámetros a la URL
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const remember = document.getElementById('remember').checked;
+    const formData = new FormData(loginForm);
 
-      const users = JSON.parse(localStorage.getItem('users')) || [];
+    try {
+      const response = await fetch('./login-dos.php', {
+        method: 'POST',
+        body: formData
+      });
 
-      const user = users.find(u => u.email === email && u.password === password);
+      const data = await response.json();
 
-      if (user) {
-        const currentUser = {
-          name: user.name,
-          email: user.email,
-          phone: user.phone
-        };
-
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-
-        if (remember) {
-          localStorage.setItem('rememberUser', 'true');
-        } else {
-          localStorage.removeItem('rememberUser');
-        }
-
+      if (data.status === 'success') {
         showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo...', 'success');
-
-        setTimeout(() => {
-          window.location.href = 'index.php';
-        }, 1500);
+        setTimeout(() => window.location.href = 'index.php', 1500);
       } else {
-        showMessage('❌ Correo o contraseña incorrectos', 'error');
+        showMessage('❌ ' + (data.message || 'Error al iniciar sesión'), 'error');
       }
-    });
-
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-      window.location.href = 'index.php';
+    } catch (error) {
+      showMessage('❌ Error de conexión con el servidor', 'error');
+      console.error(error);
     }
-  </script>
+  });
+</script>
+
 
 </body>
 </html>

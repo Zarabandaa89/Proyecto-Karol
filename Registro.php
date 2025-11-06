@@ -1,5 +1,55 @@
+<?php
+include './includes/conexion.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  header('Content-Type: application/json');
+
+  $name = trim($_POST['name']);
+  $email = trim($_POST['email']);
+  $phone = trim($_POST['phone']);
+  $password = $_POST['password'];
+
+  // Validar campos obligatorios
+  if (empty($name) || empty($email) || empty($password)) {
+    echo json_encode(["status" => "error", "message" => "❌ Faltan campos obligatorios"]);
+    exit;
+  }
+
+  // Verificar si el correo ya está registrado
+  $check = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+  $check->bind_param("s", $email);
+  $check->execute();
+  $result = $check->get_result();
+
+  if ($result->num_rows > 0) {
+    echo json_encode(["status" => "error", "message" => "❌ Este correo ya está registrado"]);
+    $check->close();
+    $conn->close();
+    exit;
+  }
+
+  // Encriptar contraseña
+  $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+  // Insertar nuevo usuario
+  $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, telefono, password, fecha_registro) VALUES (?, ?, ?, ?, NOW())");
+  $stmt->bind_param("ssss", $name, $email, $phone, $hashedPassword);
+
+  if ($stmt->execute()) {
+    echo json_encode(["status" => "success", "message" => "✅ ¡Cuenta creada exitosamente!"]);
+  } else {
+    echo json_encode(["status" => "error", "message" => "❌ Error al registrar usuario"]);
+  }
+
+  $stmt->close();
+  $conn->close();
+  exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +57,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/registro.css">
 </head>
+
 <body>
   <header>
     <div class="barra-superior">
@@ -74,7 +125,7 @@
         <label class="terms-checkbox">
           <input type="checkbox" id="terms" required>
           <span>
-            Acepto los <a href="#">Términos y Condiciones</a> y la 
+            Acepto los <a href="#">Términos y Condiciones</a> y la
             <a href="#">Política de Privacidad</a>
           </span>
         </label>
@@ -85,7 +136,7 @@
       </form>
 
       <div class="login-link">
-        ¿Ya tienes cuenta? <a href="iniciosesion.php">Inicia sesión aquí</a>
+        ¿Ya tienes cuenta? <a href="inicio-sesion.php">Inicia sesión aquí</a>
       </div>
     </div>
   </div>
@@ -101,71 +152,47 @@
     function showMessage(text, type) {
       messageDiv.textContent = text;
       messageDiv.className = 'message ' + type + ' show';
-      setTimeout(function() {
-        messageDiv.classList.remove('show');
-      }, 5000);
+      setTimeout(() => messageDiv.classList.remove('show'), 5000);
     }
 
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const phone = document.getElementById('phone').value;
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
       const terms = document.getElementById('terms').checked;
 
-      if (!terms) {
-        showMessage('❌ Debes aceptar los términos y condiciones', 'error');
-        return;
-      }
+      if (!terms) return showMessage('❌ Debes aceptar los términos y condiciones', 'error');
+      if (password !== confirmPassword) return showMessage('❌ Las contraseñas no coinciden', 'error');
+      if (password.length < 6) return showMessage('❌ La contraseña debe tener al menos 6 caracteres', 'error');
 
-      if (password !== confirmPassword) {
-        showMessage('❌ Las contraseñas no coinciden', 'error');
-        return;
-      }
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('password', password);
 
-      if (password.length < 6) {
-        showMessage('❌ La contraseña debe tener al menos 6 caracteres', 'error');
-        return;
-      }
-
-      let users = [];
       try {
-        users = JSON.parse(localStorage.getItem('users')) || [];
-      } catch (error) {
-        users = [];
+        const res = await fetch('Registro.php', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        showMessage(data.message, data.status);
+
+        if (data.status === 'success') {
+          setTimeout(() => window.location.href = 'inicio-sesion.php', 1500);
+        }
+      } catch (err) {
+        showMessage('❌ Error al conectar con el servidor', 'error');
       }
-
-      if (users.some(function(u) { return u.email === email; })) {
-        showMessage('❌ Este correo ya está registrado. Intenta iniciar sesión', 'error');
-        return;
-      }
-
-      const newUser = {
-        id: Date.now(),
-        name: name,
-        email: email,
-        phone: phone,
-        password: password,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-
-      showMessage('✅ ¡Cuenta creada exitosamente! Redirigiendo a inicio de sesión...', 'success');
-
-      setTimeout(function() {
-        window.location.href = 'iniciosesion.php';
-      }, 1500);
     });
-
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-      window.location.href = 'index.php';
-    }
   </script>
+
 </body>
+
 </html>

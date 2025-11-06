@@ -157,7 +157,7 @@ include "../includes/conexion.php";
         tbody.innerHTML = productos.map(p => `
           <tr>
             <td>${p.id}</td>
-            <td>${p.nombre}</td>
+            <td>${p.nombre_producto}</td>
             <td>${p.categoria}</td>
             <td>$${parseInt(p.precio).toLocaleString()}</td>
             <td>${p.badge || "-"}</td>
@@ -196,7 +196,7 @@ include "../includes/conexion.php";
         editandoId = id;
         document.getElementById("modalTitle").textContent = "Editar Producto";
 
-        document.getElementById("nombre").value = p.nombre;
+        document.getElementById("nombre").value = p.nombre_producto;
         document.getElementById("categoria").value = p.categoria;
         document.getElementById("precio").value = p.precio;
         document.getElementById("descripcion").value = p.descripcion;
