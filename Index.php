@@ -2,6 +2,10 @@
 session_start();
 include "includes/conexion.php";
 ?>
+<?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'cuenta_eliminada'): ?>
+  <script>alert("Tu cuenta ha sido eliminada correctamente.");</script>
+<?php endif; ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -30,7 +34,7 @@ include "includes/conexion.php";
       </nav>
 
       <div class="iconos">
-        <a href="#"><i class="fa-regular fa-heart"></i></a>
+        
 
         <button class="icon-btn" id="cartToggle">
           <i class="fa-solid fa-cart-shopping"></i>

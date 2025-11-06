@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/inicio-sesion.css">
 </head>
+
 <body>
   <header>
     <div class="barra-superior">
@@ -105,7 +107,9 @@
     const adminEmails = [
       "admin@chicroyale.com",
       "santiago@admin.com",
-      "nikol@admin.com"
+      "santiagoo@admin.com",
+      "karol@admin.com",
+      "karol@chicroyale.com"
     ];
 
     function showMessage(text, type) {
@@ -128,15 +132,20 @@
         });
         const data = await response.json();
 
-        if (data.status === 'success') {
-          const esAdmin = adminEmails.includes(email);
+        if (data.status === 'admin') {
+          showMessage('👑 Bienvenido administrador', 'success');
+          setTimeout(() => {
+            window.location.href = 'admin/admin.login.php';
+          }, 1000);
+        } else if (data.status === 'success') {
           showMessage('✅ Inicio de sesión exitoso', 'success');
           setTimeout(() => {
-            window.location.href = esAdmin ? 'admin/admin.login.php' : 'index.php';
-          }, 1500);
+            window.location.href = 'index.php';
+          }, 1000);
         } else {
           showMessage('❌ ' + (data.message || 'Error al iniciar sesión'), 'error');
         }
+
       } catch (error) {
         showMessage('❌ Error de conexión con el servidor', 'error');
       }
@@ -166,4 +175,5 @@
     });
   </script>
 </body>
+
 </html>

@@ -4,15 +4,28 @@ function addToCart(productId) {
   const producto = productos.find(p => p.id === productId);
   const itemExistente = cart.find(item => item.id === productId);
 
-  if (itemExistente) {
-    itemExistente.cantidad++;
-  } else {
-    cart.push({ ...producto, cantidad: 1 });
-  }
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateCart();
-  showNotification('Producto agregado al carrito');
+  // Descontar stock del servidor
+  fetch("actualizar_stock.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `id=${productId}`
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (itemExistente) {
+        itemExistente.cantidad++;
+      } else {
+        cart.push({ ...producto, cantidad: 1 });
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCart();
+      showNotification('Producto agregado al carrito');
+    } else {
+      showNotification('Producto sin stock disponible');
+    }
+  })
+  .catch(() => showNotification('Error al conectar con el servidor.'));
 }
 
 function updateCart() {
@@ -58,18 +71,49 @@ function updateCart() {
 
 function updateQuantity(productId, change) {
   const item = cart.find(item => item.id === productId);
-  if (item) {
-    item.cantidad += change;
-    if (item.cantidad <= 0) {
-      removeFromCart(productId);
-    } else {
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
-    }
+  if (!item) return;
+
+  // Si restamos cantidad, devolvemos stock
+  if (change < 0) {
+    fetch("devolver_stock.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `id=${productId}`
+    });
+  }
+
+  // Si aumentamos cantidad, restamos stock
+  if (change > 0) {
+    fetch("actualizar_stock.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `id=${productId}`
+    });
+  }
+
+  item.cantidad += change;
+
+  if (item.cantidad <= 0) {
+    removeFromCart(productId);
+  } else {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
   }
 }
 
 function removeFromCart(productId) {
+  const removedItem = cart.find(item => item.id === productId);
+  if (removedItem) {
+    // Devolver al stock tantas unidades como había en el carrito
+    for (let i = 0; i < removedItem.cantidad; i++) {
+      fetch("devolver_stock.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `id=${productId}`
+      });
+    }
+  }
+
   cart = cart.filter(item => item.id !== productId);
   localStorage.setItem('cart', JSON.stringify(cart));
   updateCart();

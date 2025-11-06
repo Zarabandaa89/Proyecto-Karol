@@ -25,7 +25,6 @@
       </nav>
 
       <div class="iconos">
-        <a href="#"><i class="fa-regular fa-heart"></i></a>
 
         <!-- 🛒 Icono del carrito -->
         <button class="icon-btn" id="cartToggle">
