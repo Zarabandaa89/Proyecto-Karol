@@ -1,7 +1,7 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function addToCart(productId) {
-  const producto = productos.find(p => p.id === productId);
+  const producto = producto.find(p => p.id === productId);
   const itemExistente = cart.find(item => item.id === productId);
 
   // Descontar stock del servidor
