@@ -262,7 +262,7 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
     const id = parseInt(btn.dataset.id);
     addToCart(id);
 
-    fetch("actualizar_stock.php", {
+      fetch("actualizar_stock.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded"
@@ -280,8 +280,8 @@ document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
 });
 </script>
 
+<!-- prueba -->
 
-  <!-- 🛒 Script del carrito -->
   <script src="js/cart.js"></script>
 </body>
 </html>
