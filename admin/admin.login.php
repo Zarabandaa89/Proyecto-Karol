@@ -1,8 +1,6 @@
 <?php
-include "../includes/conexion.php";
-?>
-<?php
 session_start();
+include "../includes/conexion.php";
 
 if (!isset($_SESSION['es_admin']) || $_SESSION['es_admin'] !== true) {
   header("Location: ../inicio-sesion.php");
@@ -12,16 +10,15 @@ if (!isset($_SESSION['es_admin']) || $_SESSION['es_admin'] !== true) {
 $admin_email = $_SESSION['usuario_email'] ?? 'admin@chicroyale.com';
 $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Administrador | Chic Royale</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
 </head>
 
 <body>
@@ -34,8 +31,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       <li><a href="#" class="active" data-section="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
       <li><a href="#" data-section="usuarios"><i class="fa-solid fa-users"></i> Usuarios</a></li>
       <li><a href="#" data-section="pedidos"><i class="fa-solid fa-shopping-cart"></i> Pedidos</a></li>
-
-
     </ul>
   </aside>
 
@@ -47,13 +42,10 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         <div>
           <strong><?= htmlspecialchars($admin_nombre) ?></strong>
           <p style="font-size: 12px; color: #999;"><?= htmlspecialchars($admin_email) ?></p>
-
         </div>
         <button class="logout-btn" onclick="window.location.href='admin.logout.php'">
           <i class="fa-solid fa-right-from-bracket"></i> Salir
         </button>
-
-
       </div>
     </div>
 
@@ -91,6 +83,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
+    <!-- Sección de productos -->
     <div class="admin-section" id="productosSection">
       <div class="section-header">
         <h2>Gestión de Productos</h2>
@@ -122,6 +115,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
+    <!-- Sección de usuarios -->
     <div class="admin-section" id="usuariosSection" style="display:none;">
       <div class="section-header">
         <h2>Lista de Usuarios Registrados</h2>
@@ -147,9 +141,37 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
+    <!-- NUEVA SECCIÓN DE PEDIDOS -->
+    <div class="admin-section" id="pedidosSection" style="display:none;">
+      <div class="section-header">
+        <h2>Lista de Pedidos</h2>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Email</th>
+              <th>Método Pago</th>
+              <th>Productos</th>
+              <th>Total</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="pedidosTable">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:40px;">Cargando...</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
   </main>
 
-  <!-- MODAL PRODUCTO (igual que ya tenías) -->
+  <!-- Modal de productos -->
   <div class="modal" id="productoModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -158,9 +180,15 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
 
       <form id="productoForm" enctype="multipart/form-data">
-        <input type="hidden" id="productoId">
-        <div class="form-group"><label>Nombre *</label><input type="text" id="nombre" required></div>
-        <div class="form-group"><label>Categoría *</label>
+        <input type="hidden" id="productoId" />
+
+        <div class="form-group">
+          <label>Nombre *</label>
+          <input type="text" id="nombre" required />
+        </div>
+
+        <div class="form-group">
+          <label>Categoría *</label>
           <select id="categoria" required>
             <option value="">Seleccionar...</option>
             <option value="labios">Labios</option>
@@ -170,20 +198,35 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
             <option value="accesorios">Accesorios</option>
           </select>
         </div>
-        <div class="form-group"><label>Precio *</label><input type="number" id="precio" required min="0"></div>
-        <div class="form-group"><label>Descripción *</label><textarea id="descripcion" required></textarea></div>
-        <div class="form-group"><label>Badge</label>
+
+        <div class="form-group">
+          <label>Precio *</label>
+          <input type="number" id="precio" required min="0" />
+        </div>
+
+        <div class="form-group">
+          <label>Descripción *</label>
+          <textarea id="descripcion" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Badge</label>
           <select id="badge">
             <option value="">Ninguno</option>
             <option value="Nuevo">Nuevo</option>
             <option value="Popular">Popular</option>
           </select>
         </div>
-        <div class="form-group"><label>Imagen del producto</label><input type="file" id="imagen" accept="image/*"></div>
+
+        <div class="form-group">
+          <label>Imagen del producto</label>
+          <input type="file" id="imagen" accept="image/*" />
+        </div>
+
         <div class="form-group">
           <label for="destacado">Destacado</label>
-          <input type="hidden" name="destacado" value="0">
-          <input type="checkbox" id="destacado" name="destacado" value="1">
+          <input type="hidden" name="destacado" value="0" />
+          <input type="checkbox" id="destacado" name="destacado" value="1" />
         </div>
 
         <div class="form-actions">
@@ -197,7 +240,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
   <script>
     let editandoId = null;
 
-    // ---- PRODUCTOS ----
+    // ================== PRODUCTOS ==================
     function cargarProductos() {
       fetch("productos-crud.php", {
           method: "POST",
@@ -209,27 +252,31 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         .then(r => r.json())
         .then(productos => {
           const tbody = document.getElementById("productosTable");
+          if (!Array.isArray(productos)) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;">No se encontraron productos</td></tr>`;
+            return;
+          }
           tbody.innerHTML = productos.map(p => `
-          <tr>
-            <td>${p.id}</td>
-            <td><img src="../uploads/${p.imagen || 'placeholder.png'}" width="60" height="60" style="object-fit:cover;border-radius:6px"></td>
-            <td>${p.nombre_producto}</td>
-            <td>${p.categoria}</td>
-            <td>${p.precio_formateado}</td>
-            <td>${p.badge || "-"}</td>
-            <td>
-              <button class="btn-action btn-edit" onclick="editarProducto(${p.id})"><i class="fa-solid fa-edit"></i></button>
-              <button class="btn-action btn-delete" onclick="eliminarProducto(${p.id})"><i class="fa-solid fa-trash"></i></button>
-            </td>
-            <td>${p.destacado == 1 ? "✅ Sí" : "❌ No"}</td>
-          </tr>
-        `).join('');
+            <tr>
+              <td>${p.id}</td>
+              <td><img src="../uploads/${p.imagen || 'placeholder.png'}" width="60" height="60" style="object-fit:cover;border-radius:6px"></td>
+              <td>${p.nombre_producto}</td>
+              <td>${p.categoria}</td>
+              <td>${p.precio_formateado}</td>
+              <td>${p.badge || "-"}</td>
+              <td>
+                <button class="btn-action btn-edit" onclick="editarProducto(${p.id})"><i class="fa-solid fa-edit"></i></button>
+                <button class="btn-action btn-delete" onclick="eliminarProducto(${p.id})"><i class="fa-solid fa-trash"></i></button>
+              </td>
+              <td>${p.destacado == 1 ? "✅ Sí" : "❌ No"}</td>
+            </tr>
+          `).join('');
           document.getElementById("totalProductos").textContent = productos.length;
         })
         .catch(err => console.error("Error cargarProductos:", err));
     }
 
-    // ---- USUARIOS (contador) ----
+    // ================== USUARIOS ==================
     function cargarUsuariosCount() {
       fetch("usuarios-crud.php", {
           method: "POST",
@@ -239,13 +286,10 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
           body: "accion=contar"
         })
         .then(r => r.text())
-        .then(total => {
-          document.getElementById("totalUsuarios").textContent = total;
-        })
+        .then(total => document.getElementById("totalUsuarios").textContent = total)
         .catch(err => console.error("Error contar usuarios:", err));
     }
 
-    // ---- LISTA DE USUARIOS ----
     function cargarListaUsuarios() {
       fetch("usuarios-crud.php", {
           method: "POST",
@@ -262,19 +306,54 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
             return;
           }
           tbody.innerHTML = usuarios.map(u => `
-          <tr>
-            <td>${u.id}</td>
-            <td>${u.nombre}</td>
-            <td>${u.email}</td>
-            <td>${u.telefono || '-'}</td>
-            <td>${u.fecha_registro || '-'}</td>
-          </tr>
-        `).join('');
+            <tr>
+              <td>${u.id}</td>
+              <td>${u.nombre}</td>
+              <td>${u.email}</td>
+              <td>${u.telefono || '-'}</td>
+              <td>${u.fecha_registro || '-'}</td>
+            </tr>
+          `).join('');
         })
         .catch(err => console.error("Error cargarListaUsuarios:", err));
     }
 
-    // ---- MODAL / CRUD PRODUCTOS (resumido) ----
+    // ================== PEDIDOS ==================
+    function cargarPedidos() {
+      fetch("pedidos-crud.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: "accion=listar"
+        })
+        .then(r => r.json())
+        .then(pedidos => {
+          const tbody = document.getElementById("pedidosTable");
+          if (!Array.isArray(pedidos)) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;">No se encontraron pedidos</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = pedidos.map(p => `
+        <tr>
+          <td>${p.id}</td>
+          <td>${p.cliente}</td>
+          <td>${p.email}</td>
+          <td>${p.metodo_pago}</td>
+          <td>${p.productos}</td>
+          <td>${p.total_formateado}</td>
+          <td>${p.fecha}</td>
+        </tr>
+      `).join('');
+          document.getElementById("totalPedidos").textContent = pedidos.length;
+        })
+        .catch(err => console.error("Error cargarPedidos:", err));
+    }
+
+
+
+    // ================== MODAL CRUD ==================
     function openModal() {
       editandoId = null;
       document.getElementById("productoForm").reset();
@@ -287,7 +366,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
     }
 
     function editarProducto(id) {
-      // pedimos todos y filtramos (simple)
       fetch("productos-crud.php", {
           method: "POST",
           headers: {
@@ -322,12 +400,11 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         })
         .then(r => r.text())
         .then(resp => {
-          showMessage(resp === "success" ? "Producto eliminado" : "Error al eliminar", resp);
+          showMessage(resp === "success" ? "Producto eliminado ✅" : "Error al eliminar ❌", resp);
           cargarProductos();
         });
     }
 
-    // GUARDAR PRODUCTO (crear/editar)
     document.getElementById("productoForm").addEventListener("submit", e => {
       e.preventDefault();
       const formData = new FormData();
@@ -363,12 +440,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       setTimeout(() => msg.classList.remove("show"), 3000);
     }
 
-    function logout() {
-      localStorage.removeItem("adminSession");
-      window.location.href = "../inicio-sesion.php";
-    }
-
-    // ---- manejador de secciones (menu lateral) ----
+    // ================== MENÚ ==================
     document.querySelectorAll(".menu-admin a").forEach(link => {
       link.addEventListener("click", e => {
         e.preventDefault();
@@ -376,26 +448,26 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         link.classList.add("active");
         const section = link.getAttribute("data-section");
 
-        const prodSec = document.getElementById("productosSection");
-        const usrSec = document.getElementById("usuariosSection");
-        if (prodSec) prodSec.style.display = "none";
-        if (usrSec) usrSec.style.display = "none";
+        document.getElementById("productosSection").style.display = "none";
+        document.getElementById("usuariosSection").style.display = "none";
+        document.getElementById("pedidosSection").style.display = "none";
 
         if (section === "dashboard") {
-          if (prodSec) prodSec.style.display = "block";
+          document.getElementById("productosSection").style.display = "block";
         } else if (section === "usuarios") {
-          if (usrSec) {
-            usrSec.style.display = "block";
-            cargarListaUsuarios();
-          }
+          document.getElementById("usuariosSection").style.display = "block";
+          cargarListaUsuarios();
+        } else if (section === "pedidos") {
+          document.getElementById("pedidosSection").style.display = "block";
+          cargarPedidos();
         }
       });
     });
 
-    // carga inicial
+    // ================== INICIAL ==================
     cargarProductos();
     cargarUsuariosCount();
-    document.getElementById("totalPedidos").textContent = "8";
+    cargarPedidos();
     document.getElementById("totalVentas").textContent = "$2.450.000";
   </script>
 </body>

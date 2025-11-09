@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Iniciar Sesión | Chic Royale</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="css/inicio-sesion.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/inicio-sesion.css" />
 </head>
 
 <body>
@@ -65,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Formulario de Recuperación -->
+    <!-- 🔹 Recuperar contraseña -->
     <div class="login-box" id="recoverBox" style="display:none;">
       <div class="login-header">
         <i class="fa-solid fa-lock"></i>
@@ -104,27 +103,16 @@
     const recoverForm = document.getElementById('recoverForm');
     const backToLoginLink = document.getElementById('backToLogin');
 
-    const adminEmails = [
-      "admin@chicroyale.com",
-      "santiago@admin.com",
-      "santiagoo@admin.com",
-      "karol@admin.com",
-      "karol@chicroyale.com",
-      "san@admin.com"
-    ];
-
     function showMessage(text, type) {
       messageDiv.textContent = text;
       messageDiv.className = 'message ' + type + ' show';
       setTimeout(() => messageDiv.classList.remove('show'), 4000);
     }
 
-    // 🔹 LOGIN con conexión al backend PHP
+    // 🔹 LOGIN PHP
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
-
       const formData = new FormData(loginForm);
-      const email = formData.get('email').toLowerCase();
 
       try {
         const response = await fetch('login-dos.php', {
@@ -137,22 +125,21 @@
           showMessage('👑 Bienvenido administrador', 'success');
           setTimeout(() => {
             window.location.href = 'admin/admin.login.php';
-          }, 1000);
+          }, 1200);
         } else if (data.status === 'success') {
           showMessage('✅ Inicio de sesión exitoso', 'success');
           setTimeout(() => {
             window.location.href = 'index.php';
-          }, 1000);
+          }, 1200);
         } else {
           showMessage('❌ ' + (data.message || 'Error al iniciar sesión'), 'error');
         }
-
       } catch (error) {
         showMessage('❌ Error de conexión con el servidor', 'error');
       }
     });
 
-    // 🔹 Recuperar contraseña
+    // 🔹 Recuperación de contraseña
     forgotPasswordLink.addEventListener('click', (e) => {
       e.preventDefault();
       loginBox.style.display = 'none';
@@ -167,14 +154,13 @@
 
     recoverForm.addEventListener('submit', function(e) {
       e.preventDefault();
-      const recoverEmail = document.getElementById('recoverEmail').value.trim();
-      if (!recoverEmail) {
+      const email = document.getElementById('recoverEmail').value.trim();
+      if (!email) {
         showMessage('❌ Ingresa un correo válido', 'error');
         return;
       }
-      showMessage('✅ Se envió un enlace de recuperación al correo.', 'success');
+      showMessage('✅ Se envió un enlace de recuperación.', 'success');
     });
   </script>
 </body>
-
 </html>
