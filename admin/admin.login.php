@@ -91,7 +91,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
-    <!-- SECCIÓN PRODUCTOS (visible por defecto) -->
     <div class="admin-section" id="productosSection">
       <div class="section-header">
         <h2>Gestión de Productos</h2>
@@ -123,7 +122,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
-    <!-- SECCIÓN USUARIOS (oculta inicialmente) -->
     <div class="admin-section" id="usuariosSection" style="display:none;">
       <div class="section-header">
         <h2>Lista de Usuarios Registrados</h2>

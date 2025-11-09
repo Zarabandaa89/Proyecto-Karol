@@ -1,31 +1,47 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-function addToCart(productId) {
-  const producto = producto.find(p => p.id === productId);
-  const itemExistente = cart.find(item => item.id === productId);
+// Espera hasta que productos esté disponible antes de permitir usarlo
+function waitForProductos(callback) {
+  if (typeof window.productos !== "undefined" && Array.isArray(window.productos)) {
+    callback();
+  } else {
+    console.warn("⏳ Esperando a que se carguen los productos...");
+    setTimeout(() => waitForProductos(callback), 100);
+  }
+}
 
-  // Descontar stock del servidor
-  fetch("actualizar_stock.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `id=${productId}`
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      if (itemExistente) {
-        itemExistente.cantidad++;
-      } else {
-        cart.push({ ...producto, cantidad: 1 });
-      }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCart();
-      showNotification('Producto agregado al carrito');
-    } else {
-      showNotification('Producto sin stock disponible');
+function addToCart(productId) {
+  waitForProductos(() => {
+    const producto = window.productos.find(p => p.id === productId);
+    if (!producto) {
+      console.error("⚠️ Producto no encontrado:", productId);
+      return;
     }
-  })
-  .catch(() => showNotification('Error al conectar con el servidor.'));
+
+    const itemExistente = cart.find(item => item.id === productId);
+
+    fetch("actualizar_stock.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `id=${productId}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        if (itemExistente) {
+          itemExistente.cantidad++;
+        } else {
+          cart.push({ ...producto, cantidad: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+        showNotification('Producto agregado al carrito');
+      } else {
+        showNotification('Producto sin stock disponible');
+      }
+    })
+    .catch(() => showNotification('Error al conectar con el servidor.'));
+  });
 }
 
 function updateCart() {
@@ -36,7 +52,7 @@ function updateCart() {
   const totalItems = cart.reduce((sum, item) => sum + item.cantidad, 0);
   if (cartCount) cartCount.textContent = totalItems;
 
-  if (!cartItems || !cartTotal) return; 
+  if (!cartItems || !cartTotal) return;
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
   cartTotal.textContent = '$' + totalPrice.toLocaleString();
@@ -51,7 +67,6 @@ function updateCart() {
   } else {
     cartItems.innerHTML = cart.map(item => `
       <div class="cart-item">
-        <div class="cart-item-image"></div>
         <div class="cart-item-info">
           <div class="cart-item-name">${item.nombre}</div>
           <div class="cart-item-price">$${item.precio.toLocaleString()}</div>
@@ -73,7 +88,6 @@ function updateQuantity(productId, change) {
   const item = cart.find(item => item.id === productId);
   if (!item) return;
 
-  // Si restamos cantidad, devolvemos stock
   if (change < 0) {
     fetch("devolver_stock.php", {
       method: "POST",
@@ -82,7 +96,6 @@ function updateQuantity(productId, change) {
     });
   }
 
-  // Si aumentamos cantidad, restamos stock
   if (change > 0) {
     fetch("actualizar_stock.php", {
       method: "POST",
@@ -104,7 +117,6 @@ function updateQuantity(productId, change) {
 function removeFromCart(productId) {
   const removedItem = cart.find(item => item.id === productId);
   if (removedItem) {
-    // Devolver al stock tantas unidades como había en el carrito
     for (let i = 0; i < removedItem.cantidad; i++) {
       fetch("devolver_stock.php", {
         method: "POST",
@@ -120,7 +132,7 @@ function removeFromCart(productId) {
 }
 
 function showNotification(message) {
-  alert(message); 
+  alert(message);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

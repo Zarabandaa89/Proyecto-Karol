@@ -109,7 +109,8 @@
       "santiago@admin.com",
       "santiagoo@admin.com",
       "karol@admin.com",
-      "karol@chicroyale.com"
+      "karol@chicroyale.com",
+      "san@admin.com"
     ];
 
     function showMessage(text, type) {

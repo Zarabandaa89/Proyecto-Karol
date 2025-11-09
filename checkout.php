@@ -1,396 +1,178 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Completar Pago | Chic Royale</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <title>Checkout | Chic Royale</title>
+  <link rel="stylesheet" href="css/checkout.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
   <header>
-    <div class="barra-superior">
-      <div class="logo">
-        <div class="logo-icon">💄</div>
-        <a href="index.html">Chic Royale</a>
-      </div>
+    <div class="checkout-header">
+      <a href="index.php" class="logo">◉ Chic Royale</a>
+      <h1>Resumen de Compra</h1>
     </div>
   </header>
 
-  <div class="checkout-container">
-    <!-- BARRA DE PROGRESO -->
-    <div class="progress-bar">
-      <div class="progress-steps">
-        <div class="progress-line"></div>
-        <div class="step completed">
-          <div class="step-circle"><i class="fa-solid fa-cart-shopping"></i></div>
-          <div class="step-text">Carrito</div>
-        </div>
-        <div class="step active">
-          <div class="step-circle"><i class="fa-solid fa-credit-card"></i></div>
-          <div class="step-text">Pago</div>
-        </div>
-        <div class="step">
-          <div class="step-circle"><i class="fa-solid fa-check"></i></div>
-          <div class="step-text">Confirmación</div>
-        </div>
-      </div>
-    </div>
+  <main class="checkout-container">
+    <section class="checkout-products" id="checkoutProducts"></section>
 
-    <!-- FORMULARIO -->
-    <div class="checkout-form">
-      <form id="checkoutForm">
-        <!-- INFORMACIÓN DE ENVÍO -->
-        <div class="form-section">
-          <h2><i class="fa-solid fa-truck"></i> Información de Envío</h2>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label>Nombre Completo *</label>
-              <input type="text" id="fullName" required>
-            </div>
-            <div class="form-group">
-              <label>Teléfono *</label>
-              <input type="tel" id="phone" required>
-            </div>
-          </div>
+    <section class="checkout-summary">
+      <h2>Resumen del Pedido</h2>
+      <div id="checkoutTotal">Total: $0</div>
 
-          <div class="form-group">
-            <label>Dirección Completa *</label>
-            <input type="text" id="address" required placeholder="Calle, número, apartamento...">
-          </div>
+      <button id="confirmPurchase" class="confirm-btn">
+        <i class="fa-solid fa-credit-card"></i> Confirmar Pago
+      </button>
+    </section>
+  </main>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Ciudad *</label>
-              <input type="text" id="city" required>
-            </div>
-            <div class="form-group">
-              <label>Código Postal</label>
-              <input type="text" id="zipCode">
-            </div>
-          </div>
+  <footer>
+    © 2025 Chic Royale - Todos los derechos reservados 💄
+  </footer>
 
-          <div class="form-group">
-            <label>Notas de Entrega (Opcional)</label>
-            <textarea id="notes" rows="3" placeholder="Ej: Dejar con el portero, Casa de color blanco..."></textarea>
-          </div>
-        </div>
+  <div id="paymentModal" class="payment-modal">
+    <div class="payment-content">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h2>Formulario de Pago</h2>
+      <form id="paymentForm">
+        <label>Nombre Completo</label>
+        <input type="text" name="nombre" required>
 
-        <!-- MÉTODO DE PAGO -->
-        <div class="form-section">
-          <h2><i class="fa-solid fa-credit-card"></i> Método de Pago</h2>
-          
-          <div class="payment-methods">
-            <label class="payment-method active" data-method="card">
-              <input type="radio" name="payment" value="card" checked>
-              <i class="fa-solid fa-credit-card"></i>
-              <div class="payment-info">
-                <h4>Tarjeta de Crédito/Débito</h4>
-                <p>Visa, Mastercard, American Express</p>
-              </div>
-            </label>
+        <label>Correo Electrónico</label>
+        <input type="email" name="email" required>
 
-            <label class="payment-method" data-method="pse">
-              <input type="radio" name="payment" value="pse">
-              <i class="fa-solid fa-building-columns"></i>
-              <div class="payment-info">
-                <h4>PSE</h4>
-                <p>Pago seguro electrónico</p>
-              </div>
-            </label>
+        <label>Dirección de Envío</label>
+        <input type="text" name="direccion" required>
 
-            <label class="payment-method" data-method="cash">
-              <input type="radio" name="payment" value="cash">
-              <i class="fa-solid fa-money-bill-wave"></i>
-              <div class="payment-info">
-                <h4>Contra Entrega</h4>
-                <p>Paga al recibir tu pedido</p>
-              </div>
-            </label>
-          </div>
+        <label>Método de Pago</label>
+        <select name="metodo" required>
+          <option value="">Seleccione...</option>
+          <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+          <option value="Nequi">Nequi</option>
+          <option value="Daviplata">Daviplata</option>
+          <option value="Contraentrega">Contraentrega</option>
+        </select>
 
-          <!-- DETALLES TARJETA -->
-          <div class="card-details active" id="cardDetails">
-            <div class="form-group">
-              <label>Número de Tarjeta *</label>
-              <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
-            </div>
+        <label>Comentarios (opcional)</label>
+        <textarea name="comentarios" rows="3"></textarea>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label>Fecha de Expiración *</label>
-                <input type="text" id="expiry" placeholder="MM/AA" maxlength="5">
-              </div>
-              <div class="form-group">
-                <label>CVV *</label>
-                <input type="text" id="cvv" placeholder="123" maxlength="4">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Nombre en la Tarjeta *</label>
-              <input type="text" id="cardName" placeholder="Como aparece en la tarjeta">
-            </div>
-          </div>
-        </div>
+        <button type="submit" class="btn-pagar">
+          <i class="fa-solid fa-file-pdf"></i> Generar Comprobante PDF
+        </button>
       </form>
     </div>
-
-    <!-- RESUMEN -->
-    <div class="order-summary">
-      <h2><i class="fa-solid fa-receipt"></i> Resumen del Pedido</h2>
-      
-      <div id="summaryItems"></div>
-
-      <div class="summary-totals">
-        <div class="total-row">
-          <span>Subtotal:</span>
-          <span id="subtotalAmount">$0</span>
-        </div>
-        <div class="total-row">
-          <span>Envío:</span>
-          <span id="shippingAmount">$5.000</span>
-        </div>
-        <div class="total-final">
-          <span>Total:</span>
-          <span id="totalAmount">$0</span>
-        </div>
-      </div>
-
-      <button class="submit-btn" id="submitOrder">
-        <i class="fa-solid fa-lock"></i> Confirmar y Pagar
-      </button>
-
-      <div class="security-note">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>Tus datos están protegidos con encriptación SSL</span>
-      </div>
-    </div>
   </div>
 
-  <!-- MODAL ÉXITO -->
-  <div class="success-modal" id="successModal">
-    <div class="success-content">
-      <div class="success-icon">
-        <i class="fa-solid fa-check"></i>
-      </div>
-      <h2>¡Pedido Confirmado!</h2>
-      <p>Tu pedido ha sido procesado exitosamente.</p>
-      <div class="order-number">
-        Número de Pedido: <span id="orderNumber"></span>
-      </div>
-      <p>Recibirás un correo de confirmación con los detalles de tu compra.</p>
-      
-      <div class="success-buttons">
-        <button class="success-btn primary" onclick="window.location.href='index.php'">
-          <i class="fa-solid fa-home"></i> Volver al Inicio
-        </button>
-        <button class="success-btn secondary" onclick="window.location.href='pedidos.php'">
-          <i class="fa-solid fa-box"></i> Ver Mis Pedidos
-        </button>
-      </div>
-    </div>
-  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <script>
-    // ==========================================
-    // CARGAR DATOS DEL PEDIDO
-    // ==========================================
-    
-    function loadOrderData() {
-      const orderData = localStorage.getItem('pendingOrder');
-      if (!orderData) {
-        alert('❌ No hay un pedido pendiente');
-        window.location.href = 'index.php';
-        return null;
-      }
-      return JSON.parse(orderData);
-    }
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const container = document.getElementById('checkoutProducts');
+  const totalDiv = document.getElementById('checkoutTotal');
 
-    // ==========================================
-    // RENDERIZAR RESUMEN
-    // ==========================================
-    
-    function renderSummary() {
-      const order = loadOrderData();
-      if (!order) return;
-
-      const summaryItems = document.getElementById('summaryItems');
-      summaryItems.innerHTML = order.items.map(item => `
-        <div class="summary-item">
-          <div class="item-image">
-            <img src="${item.image}" alt="${item.name}" onerror="this.parentElement.style.background='linear-gradient(135deg, #ffb6c1, #ff69b4)'">
-          </div>
-          <div class="item-details">
-            <h4>${item.name}</h4>
-            <p>Cantidad: ${item.quantity}</p>
-          </div>
-          <div class="item-price">
-            $${(item.price * item.quantity).toLocaleString()}
+  if (cart.length === 0) {
+    container.innerHTML = '<p class="empty">Tu carrito está vacío.</p>';
+  } else {
+    let total = 0;
+    container.innerHTML = cart.map(item => {
+      total += item.precio * item.cantidad;
+      return `
+        <div class="checkout-item">
+          <img src="${item.imagen}" alt="${item.nombre}">
+          <div>
+            <h3>${item.nombre}</h3>
+            <p>Cantidad: ${item.cantidad}</p>
+            <p>Precio: $${item.precio.toLocaleString()}</p>
           </div>
         </div>
-      `).join('');
+      `;
+    }).join('');
+    totalDiv.textContent = 'Total: $' + total.toLocaleString();
+  }
 
-        const subtotal = order.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        document.getElementById('subtotalAmount').textContent = '$' + subtotal.toLocaleString();
-        document.getElementById('totalAmount').textContent = '$' + (subtotal + 5000).toLocaleString();
+  const modal = document.getElementById('paymentModal');
+  const confirmBtn = document.getElementById('confirmPurchase');
+  const closeModal = document.getElementById('closeModal');
+  const paymentForm = document.getElementById('paymentForm');
+
+  confirmBtn.addEventListener('click', () => {
+    if (cart.length === 0) {
+      alert("⚠️ Tu carrito está vacío.");
+      return;
     }
+    modal.classList.add('show');
+  });
 
-    // ==========================================
-    // MÉTODOS DE PAGO
-    // ==========================================
-    
-    document.querySelectorAll('.payment-method').forEach(method => {
-      method.addEventListener('click', function() {
-        document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('active'));
-        this.classList.add('active');
-        this.querySelector('input').checked = true;
+  closeModal.addEventListener('click', () => modal.classList.remove('show'));
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.classList.remove('show');
+  });
 
-        const cardDetails = document.getElementById('cardDetails');
-        if (this.dataset.method === 'card') {
-          cardDetails.classList.add('active');
-        } else {
-          cardDetails.classList.remove('active');
-        }
-      });
+  paymentForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const datos = Object.fromEntries(new FormData(paymentForm).entries());
+    const total = cart.reduce((sum, item) => sum + item.precio * item.cantidad, 0);
+
+    fetch("guardar_venta.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        nombre: datos.nombre,
+        email: datos.email,
+        direccion: datos.direccion,
+        metodo: datos.metodo,
+        comentarios: datos.comentarios,
+        total: total,
+        productos: JSON.stringify(cart)
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        console.log("✅ Venta guardada en la base de datos");
+      } else {
+        console.error("❌ Error al guardar venta:", data.message);
+      }
+    })
+    .catch(err => console.error("Error al enviar venta:", err));
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18);
+    doc.text("Comprobante de Compra - Chic Royale", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Nombre: ${datos.nombre}`, 20, 35);
+    doc.text(`Correo: ${datos.email}`, 20, 42);
+    doc.text(`Dirección: ${datos.direccion}`, 20, 49);
+    doc.text(`Método de Pago: ${datos.metodo}`, 20, 56);
+    if (datos.comentarios) doc.text(`Comentarios: ${datos.comentarios}`, 20, 63);
+    doc.text("Detalle de la compra:", 20, 75);
+
+    let y = 82;
+    cart.forEach((item, i) => {
+      doc.text(`${i + 1}. ${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toLocaleString()}`, 20, y);
+      y += 7;
     });
 
-    // ==========================================
-    // FORMATEAR CAMPOS
-    // ==========================================
-    
-    // Formatear número de tarjeta
-    const cardNumberInput = document.getElementById('cardNumber');
-    if (cardNumberInput) {
-      cardNumberInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
-        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-        e.target.value = formattedValue;
-      });
-    }
+    doc.setFontSize(14);
+    doc.text(`Total: $${total.toLocaleString()}`, 20, y + 10);
 
-    // Formatear fecha de expiración
-    const expiryInput = document.getElementById('expiry');
-    if (expiryInput) {
-      expiryInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, '');
-        if (value.length >= 2) {
-          value = value.substring(0, 2) + '/' + value.substring(2, 4);
-        }
-        e.target.value = value;
-      });
-    }
+    const fileName = `Comprobante_${datos.nombre.replace(/\s+/g, '_')}.pdf`;
+    doc.save(fileName);
 
-    // Solo números en CVV
-    const cvvInput = document.getElementById('cvv');
-    if (cvvInput) {
-      cvvInput.addEventListener('input', function(e) {
-        e.target.value = e.target.value.replace(/\D/g, '');
-      });
-    }
-
-    // ==========================================
-    // CARGAR DATOS DEL USUARIO
-    // ==========================================
-    
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    if (currentUser.name) {
-      document.getElementById('fullName').value = currentUser.name;
-    }
-
-    // ==========================================
-    // ENVIAR PEDIDO
-    // ==========================================
-    
-    document.getElementById('submitOrder').addEventListener('click', function() {
-      const form = document.getElementById('checkoutForm');
-      
-      // Validar campos requeridos
-      const fullName = document.getElementById('fullName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const city = document.getElementById('city').value.trim();
-
-      if (!fullName || !phone || !address || !city) {
-        alert('❌ Por favor completa todos los campos obligatorios');
-        return;
-      }
-
-      const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-      
-      // Validar tarjeta si es el método seleccionado
-      if (paymentMethod === 'card') {
-        const cardNumber = document.getElementById('cardNumber').value.trim();
-        const expiry = document.getElementById('expiry').value.trim();
-        const cvv = document.getElementById('cvv').value.trim();
-        const cardName = document.getElementById('cardName').value.trim();
-
-        if (!cardNumber || !expiry || !cvv || !cardName) {
-          alert('❌ Por favor completa todos los datos de la tarjeta');
-          return;
-        }
-
-        if (cardNumber.replace(/\s/g, '').length < 13) {
-          alert('❌ Número de tarjeta inválido');
-          return;
-        }
-
-        if (!/^\d{2}\/\d{2}$/.test(expiry)) {
-          alert('❌ Fecha de expiración inválida');
-          return;
-        }
-
-        if (cvv.length < 3) {
-          alert('❌ CVV inválido');
-          return;
-        }
-      }
-
-      // Simular procesamiento
-      this.disabled = true;
-      this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando pago...';
-
-      setTimeout(() => {
-        // Generar número de pedido
-        const orderNumber = 'CR' + Date.now().toString().slice(-8);
-        document.getElementById('orderNumber').textContent = orderNumber;
-
-        // Guardar pedido en historial
-        const order = loadOrderData();
-        const orderHistory = JSON.parse(localStorage.getItem('orderHistory') || '[]');
-        orderHistory.push({
-          ...order,
-          orderNumber,
-          status: 'En proceso',
-          statusColor: '#ff9800',
-          shippingInfo: {
-            name: fullName,
-            phone: phone,
-            address: address,
-            city: city,
-            zipCode: document.getElementById('zipCode').value,
-            notes: document.getElementById('notes').value
-          },
-          paymentMethod: paymentMethod === 'card' ? 'Tarjeta' : paymentMethod === 'pse' ? 'PSE' : 'Contra Entrega'
-        });
-        localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
-
-        // Limpiar carrito y pedido pendiente
-        localStorage.removeItem('chicRoyaleCart');
-        localStorage.removeItem('pendingOrder');
-
-        // Mostrar modal de éxito
-        document.getElementById('successModal').classList.add('active');
-      }, 2500);
-    });
-
-    // ==========================================
-    // INICIALIZAR
-    // ==========================================
-    
-    renderSummary();
+    localStorage.removeItem('cart');
+    modal.classList.remove('show');
+    alert("✅ ¡Compra registrada con éxito!");
+    window.location.href = 'index.php';
+  });
   </script>
 </body>
 </html>

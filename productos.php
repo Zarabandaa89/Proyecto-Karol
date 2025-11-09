@@ -3,6 +3,7 @@ include("includes/conexion.php");
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@ include("includes/conexion.php");
   <link rel="stylesheet" href="css/productos.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
+
 <body>
   <header>
     <div class="barra-superior">
@@ -114,18 +116,18 @@ include("includes/conexion.php");
       if ($resultado->num_rows > 0) {
         while ($producto = $resultado->fetch_assoc()) {
           echo '
-          <div class="producto-card" data-categoria="'.$producto['categoria'].'">
-            '.(!empty($producto['badge']) ? '<span class="producto-badge">'.$producto['badge'].'</span>' : '').'
+          <div class="producto-card" data-categoria="' . $producto['categoria'] . '">
+            ' . (!empty($producto['badge']) ? '<span class="producto-badge">' . $producto['badge'] . '</span>' : '') . '
             <div class="producto-imagen">
-              <img src="uploads/'.$producto['imagen'].'" alt="'.$producto['nombre_producto'].'">
+              <img src="uploads/' . $producto['imagen'] . '" alt="' . $producto['nombre_producto'] . '">
             </div>
             <div class="producto-info">
-              <div class="producto-categoria">'.ucfirst($producto['categoria']).'</div>
-              <div class="producto-nombre">'.$producto['nombre_producto'].'</div>
-              <div class="producto-descripcion">'.$producto['descripcion'].'</div>
+              <div class="producto-categoria">' . ucfirst($producto['categoria']) . '</div>
+              <div class="producto-nombre">' . $producto['nombre_producto'] . '</div>
+              <div class="producto-descripcion">' . $producto['descripcion'] . '</div>
               <div class="producto-footer">
-                <div class="producto-precio">$'.number_format($producto['precio'], 0, ',', '.').'</div>
-                <button class="add-to-cart-btn" data-id="'.$producto['id'].'">
+                <div class="producto-precio">$' . number_format($producto['precio'], 0, ',', '.') . '</div>
+                <button class="add-to-cart-btn" data-id="' . $producto['id'] . '">
                   <i class="fa-solid fa-cart-plus"></i>
                   Agregar
                 </button>
@@ -167,6 +169,7 @@ include("includes/conexion.php");
       <button class="checkout-btn" id="checkoutBtn">
         <i class="fa-solid fa-credit-card"></i> Proceder al Pago
       </button>
+
     </div>
   </aside>
 
@@ -175,113 +178,106 @@ include("includes/conexion.php");
   </footer>
 
   <!-- FILTRO DE PRODUCTOS -->
+  <!-- FILTRO DE PRODUCTOS -->
   <script>
-  document.querySelectorAll('.filtro-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-      document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
 
-      const filtro = this.dataset.filter;
-      document.querySelectorAll('.producto-card').forEach(card => {
-        if (filtro === 'todos' || card.dataset.categoria === filtro) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
-        }
+        const filtro = this.dataset.filter;
+        document.querySelectorAll('.producto-card').forEach(card => {
+          card.style.display = (filtro === 'todos' || card.dataset.categoria === filtro) ? 'block' : 'none';
+        });
       });
     });
-  });
   </script>
 
   <!-- USUARIO -->
   <script>
-  const userToggle = document.getElementById("userToggle");
-  const dropdownMenu = document.getElementById("dropdownMenu");
-  const guestLinks = document.getElementById("guestLinks");
-  const userProfile = document.getElementById("userProfile");
-  const logoutBtn = document.getElementById("logoutBtn");
+    const userToggle = document.getElementById("userToggle");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const guestLinks = document.getElementById("guestLinks");
+    const userProfile = document.getElementById("userProfile");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-  userToggle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    dropdownMenu.classList.toggle("open");
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!dropdownMenu.contains(e.target) && !userToggle.contains(e.target)) {
-      dropdownMenu.classList.remove("open");
-    }
-  });
-
-  function checkLoginStatus() {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (user) {
-      guestLinks.classList.add('hidden');
-      userProfile.classList.add('active');
-      document.getElementById('userName').textContent = user.name || 'Usuario';
-      document.getElementById('userEmail').textContent = user.email || '';
-    } else {
-      guestLinks.classList.remove('hidden');
-      userProfile.classList.remove('active');
-    }
-  }
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('currentUser');
-      checkLoginStatus();
-      dropdownMenu.classList.remove('open');
-      alert('Has cerrado sesión correctamente');
+    userToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle("open");
     });
-  }
 
-  checkLoginStatus();
-  </script>
-  <script>
-const productos = [
-  <?php
-  $resultado->data_seek(0);
-
-  while ($producto = $resultado->fetch_assoc()) {
-    echo "{
-      id: ".$producto['id'].",
-      nombre: '".addslashes($producto['nombre_producto'])."',
-      descripcion: '".addslashes($producto['descripcion'])."',
-      precio: ".$producto['precio'].",
-      imagen: 'uploads/".$producto['imagen']."',
-      categoria: '".$producto['categoria']."'
-    },";
-  }
-  ?>
-];
-</script>
-
-<script>
-document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const id = parseInt(btn.dataset.id);
-    addToCart(id);
-
-      fetch("actualizar_stock.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: `id=${id}`
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (!data.success) {
-        alert("⚠️ " + data.message);
+    document.addEventListener("click", (e) => {
+      if (!dropdownMenu.contains(e.target) && !userToggle.contains(e.target)) {
+        dropdownMenu.classList.remove("open");
       }
-    })
-    .catch(error => console.error("Error al actualizar stock:", error));
-  });
-});
-</script>
+    });
 
-<!-- prueba -->
+    function checkLoginStatus() {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) {
+        guestLinks.classList.add('hidden');
+        userProfile.classList.add('active');
+        document.getElementById('userName').textContent = user.name || 'Usuario';
+        document.getElementById('userEmail').textContent = user.email || '';
+      } else {
+        guestLinks.classList.remove('hidden');
+        userProfile.classList.remove('active');
+      }
+    }
 
-  <script src="js/cart.js"></script>
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.removeItem('currentUser');
+        checkLoginStatus();
+        dropdownMenu.classList.remove('open');
+        alert('Has cerrado sesión correctamente');
+      });
+    }
+
+    checkLoginStatus();
+  </script>
+
+   <!-- ⚠️ 1️⃣ Primero definimos los productos y los hacemos globales -->
+  <script>
+    window.productos = [
+      <?php
+      $resultado->data_seek(0);
+      while ($producto = $resultado->fetch_assoc()) {
+        echo "{
+          id: " . $producto['id'] . ",
+          nombre: '" . addslashes($producto['nombre_producto']) . "',
+          descripcion: '" . addslashes($producto['descripcion']) . "',
+          precio: " . $producto['precio'] . ",
+          imagen: 'uploads/" . $producto['imagen'] . "',
+          categoria: '" . $producto['categoria'] . "'
+        },"; 
+      }
+      ?>
+    ];
+  </script>
+
+  <!-- ⚠️ 2️⃣ Cargamos cart.js una sola vez -->
+  <script src="js/cart.js" defer></script>
+
+  <!-- ⚠️ 3️⃣ Agregamos los eventos después -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          addToCart(id);
+        });
+      });
+
+      document.getElementById('checkoutBtn').addEventListener('click', () => {
+        if (cart.length === 0) {
+          alert("⚠️ Tu carrito está vacío.");
+        } else {
+          window.location.href = "checkout.php";
+        }
+      });
+    });
+  </script>
 </body>
 </html>

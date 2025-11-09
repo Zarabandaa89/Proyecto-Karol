@@ -208,56 +208,51 @@ include "includes/conexion.php";
 
 
   </script>
+    <!-- ⚙️ 1️⃣ Definimos los productos destacados -->
   <script>
-    const productos = [
+    window.productos = [
       <?php
-      $destacados->data_seek(0);
+      // Reiniciamos el puntero para volver a recorrer los resultados
+      $sqlDest = "SELECT * FROM productos_1 WHERE destacado = 1";
+      $destacados = $conn->query($sqlDest);
       while ($p = $destacados->fetch_assoc()) {
         echo "{
-      id: " . $p['id'] . ",
-      nombre: '" . addslashes($p['nombre_producto']) . "',
-      precio: " . $p['precio'] . ",
-      descripcion: '" . addslashes($p['descripcion']) . "',
-      imagen: 'uploads/" . $p['imagen'] . "',
-      categoria: '" . $p['categoria'] . "'
-    },";
+          id: " . $p['id'] . ",
+          nombre: '" . addslashes($p['nombre_producto']) . "',
+          precio: " . $p['precio'] . ",
+          descripcion: '" . addslashes($p['descripcion']) . "',
+          imagen: 'uploads/" . $p['imagen'] . "',
+          categoria: '" . $p['categoria'] . "'
+        },";
       }
       ?>
     ];
   </script>
 
+  <!-- ⚙️ 2️⃣ Cargamos cart.js con defer para esperar a que todo esté listo -->
+  <script src="js/cart.js" defer></script>
 
+  <!-- ⚙️ 3️⃣ Configuramos los botones de agregar al carrito -->
   <script>
-    document.querySelectorAll(".add-to-cart").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.id);
-
-        addToCart(id);
-
-        fetch("actualizar_stock.php", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: `id=${id}`
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (!data.success) {
-              alert("⚠️ " + data.message);
-            } else {
-              console.log("Stock actualizado para producto ID " + id);
-            }
-          })
-          .catch(error => console.error("Error al actualizar stock:", error));
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".add-to-cart").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.id);
+          addToCart(id);
+        });
       });
+
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert("⚠️ Tu carrito está vacío.");
+          } else {
+            window.location.href = "checkout.php";
+          }
+        });
+      }
     });
   </script>
-  
-
-
-
-  <script src="js/cart.js"></script>
 </body>
-
 </html>
