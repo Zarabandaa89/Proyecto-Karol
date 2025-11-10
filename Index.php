@@ -3,7 +3,9 @@ session_start();
 include "includes/conexion.php";
 ?>
 <?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'cuenta_eliminada'): ?>
-  <script>alert("Tu cuenta ha sido eliminada correctamente.");</script>
+  <script>
+    alert("Tu cuenta ha sido eliminada correctamente.");
+  </script>
 <?php endif; ?>
 
 
@@ -34,52 +36,49 @@ include "includes/conexion.php";
       </nav>
 
       <div class="iconos">
-        
+
 
         <button class="icon-btn" id="cartToggle">
           <i class="fa-solid fa-cart-shopping"></i>
           <span class="cart-badge" id="cartCount">0</span>
         </button>
 
-       <div class="user-menu">
-  <div class="user-toggle" id="userToggle">
-    <i class="fa-solid fa-user"></i>
-  </div>
+        <div class="user-menu">
+          <div class="user-toggle" id="userToggle">
+            <i class="fa-solid fa-user"></i>
+          </div>
 
-  <div class="dropdown-menu" id="dropdownMenu">
-    <?php if (isset($_SESSION['usuario_id'])): ?>
-      <!-- Si el usuario ha iniciado sesión -->
-      <div class="user-profile active" id="userProfile">
-        <div class="dropdown-header">
-          <i class="fa-solid fa-user-circle"></i>
-          <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
-          <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
-        </div>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+              <div class="user-profile active" id="userProfile">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
+                  <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
+                </div>
 
-        <div class="dropdown-links">
-          <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
-          <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
-          <a href="favoritos.php"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
-          <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
-        </div>
-      </div>
-    <?php else: ?>
-      <!-- Si NO hay sesión -->
-      <div class="guest-links" id="guestLinks">
-        <div class="dropdown-header">
-          <i class="fa-solid fa-user-circle"></i>
-          <h3>Bienvenido</h3>
-          <p>Inicia sesión o regístrate</p>
-        </div>
+                <div class="dropdown-links">
+                  <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
+                  <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
+                  <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+                </div>
+              </div>
+            <?php else: ?>
+              <div class="guest-links" id="guestLinks">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3>Bienvenido</h3>
+                  <p>Inicia sesión o regístrate</p>
+                </div>
 
-        <div class="dropdown-links">
-          <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
-          <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+                <div class="dropdown-links">
+                  <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
+                  <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+                </div>
+              </div>
+            <?php endif; ?>
+          </div>
         </div>
-      </div>
-    <?php endif; ?>
-  </div>
-</div>
       </div>
     </div>
   </header>
@@ -205,14 +204,10 @@ include "includes/conexion.php";
         dropdownMenu.classList.remove("open");
       }
     });
-
-
   </script>
-    <!-- ⚙️ 1️⃣ Definimos los productos destacados -->
   <script>
     window.productos = [
       <?php
-      // Reiniciamos el puntero para volver a recorrer los resultados
       $sqlDest = "SELECT * FROM productos_1 WHERE destacado = 1";
       $destacados = $conn->query($sqlDest);
       while ($p = $destacados->fetch_assoc()) {
@@ -229,10 +224,8 @@ include "includes/conexion.php";
     ];
   </script>
 
-  <!-- ⚙️ 2️⃣ Cargamos cart.js con defer para esperar a que todo esté listo -->
   <script src="js/cart.js" defer></script>
 
-  <!-- ⚙️ 3️⃣ Configuramos los botones de agregar al carrito -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".add-to-cart").forEach(btn => {
@@ -255,4 +248,5 @@ include "includes/conexion.php";
     });
   </script>
 </body>
+
 </html>

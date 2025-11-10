@@ -1,11 +1,10 @@
 <?php
-header('Content-Type: application/json'); 
+header('Content-Type: application/json');
 include './includes/conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $id_producto = intval($_POST['id']);
 
-    // Restar 1 del stock
     $sql = "UPDATE productos_1 SET stock = stock - 1 WHERE id = ? AND stock > 0";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_producto);
@@ -20,4 +19,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
     $conn->close();
 }
-?>

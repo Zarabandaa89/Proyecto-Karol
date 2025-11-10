@@ -1,5 +1,16 @@
+<?php
+session_start();
+include "includes/conexion.php";
+?>
+<?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'cuenta_eliminada'): ?>
+  <script>
+    alert("Tu cuenta ha sido eliminada correctamente.");
+  </script>
+<?php endif; ?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +18,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="css/mision.css">
 </head>
+
 <body>
   <header>
     <div class="barra-superior">
@@ -21,64 +33,45 @@
       </nav>
       <div class="iconos">
 
-        <!-- 🛒 Icono del carrito -->
         <button class="icon-btn" id="cartToggle">
           <i class="fa-solid fa-cart-shopping"></i>
           <span class="cart-badge" id="cartCount">0</span>
         </button>
 
-        <!-- 👤 Menú de usuario -->
         <div class="user-menu">
           <div class="user-toggle" id="userToggle">
             <i class="fa-solid fa-user"></i>
           </div>
 
           <div class="dropdown-menu" id="dropdownMenu">
-            <!-- Invitado -->
-            <div class="guest-links" id="guestLinks">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3>Bienvenido</h3>
-                <p>Inicia sesión o regístrate</p>
-              </div>
-              <div class="dropdown-links">
-                <a href="login.php">
-                  <i class="fa-solid fa-right-to-bracket"></i>
-                  <span>Iniciar Sesión</span>
-                </a>
-                <a href="Registro.php">
-                  <i class="fa-solid fa-user-plus"></i>
-                  <span>Registrarse</span>
-                </a>
-              </div>
-            </div>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+              <div class="user-profile active" id="userProfile">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
+                  <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
+                </div>
 
-            <!-- Usuario autenticado -->
-            <div class="user-profile" id="userProfile">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3 id="userName">Usuario</h3>
-                <p id="userEmail">email@ejemplo.com</p>
+                <div class="dropdown-links">
+                  <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
+                  <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
+                  <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+                </div>
               </div>
-              <div class="dropdown-links">
-                <a href="perfil.html">
-                  <i class="fa-solid fa-user"></i>
-                  <span>Mi Perfil</span>
-                </a>
-                <a href="pedidos.html">
-                  <i class="fa-solid fa-box"></i>
-                  <span>Mis Pedidos</span>
-                </a>
-                <a href="favoritos.html">
-                  <i class="fa-solid fa-heart"></i>
-                  <span>Favoritos</span>
-                </a>
-                <a href="#" id="logoutBtn">
-                  <i class="fa-solid fa-right-from-bracket"></i>
-                  <span>Cerrar Sesión</span>
-                </a>
+            <?php else: ?>
+              <div class="guest-links" id="guestLinks">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3>Bienvenido</h3>
+                  <p>Inicia sesión o regístrate</p>
+                </div>
+
+                <div class="dropdown-links">
+                  <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
+                  <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+                </div>
               </div>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -151,28 +144,40 @@
       <div class="compromiso-list">
         <div class="compromiso-item">
           <i class="fa-solid fa-shield-heart"></i>
-          <div><h4>Productos Auténticos</h4><p>Solo trabajamos con marcas verificadas.</p></div>
+          <div>
+            <h4>Productos Auténticos</h4>
+            <p>Solo trabajamos con marcas verificadas.</p>
+          </div>
         </div>
         <div class="compromiso-item">
           <i class="fa-solid fa-truck-fast"></i>
-          <div><h4>Entrega Rápida</h4><p>Recibe tus productos lo más pronto posible.</p></div>
+          <div>
+            <h4>Entrega Rápida</h4>
+            <p>Recibe tus productos lo más pronto posible.</p>
+          </div>
         </div>
         <div class="compromiso-item">
           <i class="fa-solid fa-headset"></i>
-          <div><h4>Atención Personalizada</h4><p>Siempre disponibles para ayudarte.</p></div>
+          <div>
+            <h4>Atención Personalizada</h4>
+            <p>Siempre disponibles para ayudarte.</p>
+          </div>
         </div>
         <div class="compromiso-item">
           <i class="fa-solid fa-lock"></i>
-          <div><h4>Compra Segura</h4><p>Transacciones 100% seguras.</p></div>
+          <div>
+            <h4>Compra Segura</h4>
+            <p>Transacciones 100% seguras.</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-   <section class="productos-container">
+  <section class="productos-container">
     <div class="productos-grid" id="productosGrid"></div>
   </section>
 
-  
+
   <div class="cart-overlay" id="cartOverlay"></div>
 
   <aside class="cart-sidebar" id="cartSidebar">
@@ -248,8 +253,24 @@
 
     checkLoginStatus();
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert("⚠️ Tu carrito está vacío.");
+          } else {
+            window.location.href = "checkout.php";
+          }
+        });
+      }
+    });
+  </script>
+
 
 
   <script src="js/cart.js"></script>
 </body>
+
 </html>

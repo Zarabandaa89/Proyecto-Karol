@@ -1,8 +1,8 @@
 <?php
 session_start();
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
-    exit;
+  header("Location: login.php");
+  exit;
 }
 
 include './includes/conexion.php';
@@ -17,6 +17,7 @@ $user = $result->fetch_assoc();
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +25,7 @@ $user = $result->fetch_assoc();
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="css/perfil.css">
 </head>
+
 <body>
   <header>
     <div class="barra-superior">
@@ -81,7 +83,7 @@ $user = $result->fetch_assoc();
           Zona Peligrosa
         </h3>
         <p>Cerrar sesión o eliminar tu cuenta permanentemente</p>
-        
+
         <a href="logout.php" class="btn btn-primary">
           <i class="fa-solid fa-right-from-bracket"></i>
           Cerrar Sesión
@@ -101,4 +103,5 @@ $user = $result->fetch_assoc();
     © 2025 Chic Royale - Todos los derechos reservados 💄
   </footer>
 </body>
+
 </html>

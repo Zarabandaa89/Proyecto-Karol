@@ -8,7 +8,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    // Consulta usuario
     $sql = "SELECT * FROM usuarios WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
@@ -18,13 +17,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result->num_rows === 1) {
         $user = $result->fetch_assoc();
 
-        // Verificar contraseña
         if (password_verify($password, $user['password'])) {
             $_SESSION['usuario_id'] = $user['id'];
             $_SESSION['usuario_email'] = $user['email'];
             $_SESSION['usuario_nombre'] = $user['nombre'];
 
-            // 🔹 Lista de correos admin
             $adminEmails = [
                 "admin@chicroyale.com",
                 "santiago@admin.com",
@@ -35,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             ];
 
             if (in_array(strtolower($email), $adminEmails)) {
-                $_SESSION['es_admin'] = true; // 🔥 Esto activa el acceso al admin
+                $_SESSION['es_admin'] = true;
                 echo json_encode(["status" => "admin"]);
                 exit;
             } else {
@@ -55,4 +52,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo json_encode(["status" => "error", "message" => "Método no permitido"]);
     exit;
 }
-?>

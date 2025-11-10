@@ -23,4 +23,3 @@ switch ($accion) {
     echo json_encode([]);
     break;
 }
-?>

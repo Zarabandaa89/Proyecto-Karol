@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: application/json'); 
+header('Content-Type: application/json');
 include './includes/conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -14,4 +14,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
     $conn->close();
 }
-?>

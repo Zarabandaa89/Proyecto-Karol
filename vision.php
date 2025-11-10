@@ -1,10 +1,20 @@
+<?php
+session_start();
+include "includes/conexion.php";
+?>
+<?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'cuenta_eliminada'): ?>
+  <script>
+    alert("Tu cuenta ha sido eliminada correctamente.");
+  </script>
+<?php endif; ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nuestra Visión | Chic Royale</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <link rel="stylesheet" href="css/vision.css">
 
@@ -26,64 +36,45 @@
 
       <div class="iconos">
 
-        <!-- 🛒 Icono del carrito -->
         <button class="icon-btn" id="cartToggle">
           <i class="fa-solid fa-cart-shopping"></i>
           <span class="cart-badge" id="cartCount">0</span>
         </button>
 
-        <!-- 👤 Menú de usuario -->
         <div class="user-menu">
           <div class="user-toggle" id="userToggle">
             <i class="fa-solid fa-user"></i>
           </div>
 
           <div class="dropdown-menu" id="dropdownMenu">
-            <!-- Invitado -->
-            <div class="guest-links" id="guestLinks">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3>Bienvenido</h3>
-                <p>Inicia sesión o regístrate</p>
-              </div>
-              <div class="dropdown-links">
-                <a href="login.php">
-                  <i class="fa-solid fa-right-to-bracket"></i>
-                  <span>Iniciar Sesión</span>
-                </a>
-                <a href="Registro.php">
-                  <i class="fa-solid fa-user-plus"></i>
-                  <span>Registrarse</span>
-                </a>
-              </div>
-            </div>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+              <div class="user-profile active" id="userProfile">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
+                  <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
+                </div>
 
-            <!-- Usuario autenticado -->
-            <div class="user-profile" id="userProfile">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3 id="userName">Usuario</h3>
-                <p id="userEmail">email@ejemplo.com</p>
+                <div class="dropdown-links">
+                  <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
+                  <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
+                  <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+                </div>
               </div>
-              <div class="dropdown-links">
-                <a href="perfil.html">
-                  <i class="fa-solid fa-user"></i>
-                  <span>Mi Perfil</span>
-                </a>
-                <a href="pedidos.html">
-                  <i class="fa-solid fa-box"></i>
-                  <span>Mis Pedidos</span>
-                </a>
-                <a href="favoritos.html">
-                  <i class="fa-solid fa-heart"></i>
-                  <span>Favoritos</span>
-                </a>
-                <a href="#" id="logoutBtn">
-                  <i class="fa-solid fa-right-from-bracket"></i>
-                  <span>Cerrar Sesión</span>
-                </a>
+            <?php else: ?>
+              <div class="guest-links" id="guestLinks">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3>Bienvenido</h3>
+                  <p>Inicia sesión o regístrate</p>
+                </div>
+
+                <div class="dropdown-links">
+                  <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
+                  <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+                </div>
               </div>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -106,16 +97,16 @@
           <i class="fa-solid fa-rocket"></i>
         </h2>
         <p>
-          Nuestra visión en <strong>Chic Royale</strong> es liderar una nueva era en la industria de la belleza en la 
-          localidad de Usme, siendo la plataforma digital de referencia para todos. Soñamos con transformar la manera 
-          en que las personas compran y experimentan productos de belleza, eliminando barreras de tiempo, distancia y 
+          Nuestra visión en <strong>Chic Royale</strong> es liderar una nueva era en la industria de la belleza en la
+          localidad de Usme, siendo la plataforma digital de referencia para todos. Soñamos con transformar la manera
+          en que las personas compran y experimentan productos de belleza, eliminando barreras de tiempo, distancia y
           acceso directo a cada consumidor, sin intermediarios.
         </p>
         <br>
         <p>
-          Visualizamos un futuro en el que cada persona pueda acceder fácilmente a productos de belleza premium, con la 
-          seguridad de estar comprando productos auténticos y de calidad. Queremos crear una experiencia de compra 
-          intuitiva, rápida y eficiente, donde cada usuario se sienta valorado, acompañado y empoderado para explorar 
+          Visualizamos un futuro en el que cada persona pueda acceder fácilmente a productos de belleza premium, con la
+          seguridad de estar comprando productos auténticos y de calidad. Queremos crear una experiencia de compra
+          intuitiva, rápida y eficiente, donde cada usuario se sienta valorado, acompañado y empoderado para explorar
           su belleza única.
         </p>
       </div>
@@ -162,7 +153,7 @@
     <div class="futuro-section">
       <h2>✨ El Futuro que Construimos ✨</h2>
       <p style="text-align:center; color:#666; max-width:800px; margin:0 auto 20px; line-height:1.8;">
-        En <strong>Chic Royale</strong>, no somos solo una aplicación de belleza, somos un movimiento hacia una nueva 
+        En <strong>Chic Royale</strong>, no somos solo una aplicación de belleza, somos un movimiento hacia una nueva
         forma de consumir: más consciente, más elegante y profundamente personal. Trabajamos cada día para hacer realidad esta visión.
       </p>
 
@@ -235,11 +226,11 @@
       </div>
     </div>
   </div>
-    <section class="productos-container">
+  <section class="productos-container">
     <div class="productos-grid" id="productosGrid"></div>
   </section>
 
-  
+
   <div class="cart-overlay" id="cartOverlay"></div>
 
   <aside class="cart-sidebar" id="cartSidebar">
@@ -284,10 +275,8 @@
     </div>
   </div>
 
-  <!-- Fondo oscuro del carrito -->
   <div id="cartOverlay" class="cart-overlay"></div>
 
-  <!-- 👤 Script de usuario -->
   <script>
     const userToggle = document.getElementById("userToggle");
     const dropdownMenu = document.getElementById("dropdownMenu");
@@ -331,8 +320,23 @@
 
     checkLoginStatus();
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const checkoutBtn = document.getElementById('checkoutBtn');
+      if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', () => {
+          if (cart.length === 0) {
+            alert("⚠️ Tu carrito está vacío.");
+          } else {
+            window.location.href = "checkout.php";
+          }
+        });
+      }
+    });
+  </script>
 
-  <!-- 🛒 Script compartido del carrito -->
+
   <script src="js/cart.js"></script>
 </body>
+
 </html>

@@ -25,7 +25,6 @@ switch ($accion) {
     $destacado = isset($_POST['destacado']) ? intval($_POST['destacado']) : 0;
 
 
-    // Procesar imagen
     $nombreImagen = "";
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
       $nombreImagen = time() . "_" . basename($_FILES["imagen"]["name"]);
@@ -51,10 +50,10 @@ switch ($accion) {
 
     $updateImagen = "";
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $nombreImagen = time() . "_" . basename($_FILES["imagen"]["name"]);
-        $rutaDestino = "../uploads/" . $nombreImagen;
-        move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino);
-        $updateImagen = ", imagen='$nombreImagen'";
+      $nombreImagen = time() . "_" . basename($_FILES["imagen"]["name"]);
+      $rutaDestino = "../uploads/" . $nombreImagen;
+      move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino);
+      $updateImagen = ", imagen='$nombreImagen'";
     }
 
     $sql = "UPDATE productos_1 SET
@@ -70,4 +69,3 @@ switch ($accion) {
     echo ($conn->query($sql)) ? "success" : "error";
     break;
 }
-

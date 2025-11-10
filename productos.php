@@ -1,6 +1,12 @@
 <?php
-include("includes/conexion.php");
+session_start();
+include "includes/conexion.php";
 ?>
+<?php if (isset($_GET['mensaje']) && $_GET['mensaje'] == 'cuenta_eliminada'): ?>
+  <script>
+    alert("Tu cuenta ha sido eliminada correctamente.");
+  </script>
+<?php endif; ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -28,51 +34,51 @@ include("includes/conexion.php");
 
       <div class="iconos">
 
-        <!-- 🛒 Icono del carrito -->
         <button class="icon-btn" id="cartToggle">
           <i class="fa-solid fa-cart-shopping"></i>
           <span class="cart-badge" id="cartCount">0</span>
         </button>
 
-        <!-- 👤 Menú de usuario -->
         <div class="user-menu">
           <div class="user-toggle" id="userToggle">
             <i class="fa-solid fa-user"></i>
           </div>
 
           <div class="dropdown-menu" id="dropdownMenu">
-            <div class="guest-links" id="guestLinks">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3>Bienvenido</h3>
-                <p>Inicia sesión o regístrate</p>
-              </div>
-              <div class="dropdown-links">
-                <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
-                <a href="registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
-              </div>
-            </div>
+            <?php if (isset($_SESSION['usuario_id'])): ?>
+              <div class="user-profile active" id="userProfile">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3><?= htmlspecialchars($_SESSION['usuario_nombre']); ?></h3>
+                  <p><?= htmlspecialchars($_SESSION['usuario_email']); ?></p>
+                </div>
 
-            <div class="user-profile" id="userProfile">
-              <div class="dropdown-header">
-                <i class="fa-solid fa-user-circle"></i>
-                <h3 id="userName">Usuario</h3>
-                <p id="userEmail">email@ejemplo.com</p>
+                <div class="dropdown-links">
+                  <a href="perfil.php"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
+                  <a href="pedidos.php"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
+                  <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+                </div>
               </div>
-              <div class="dropdown-links">
-                <a href="perfil.html"><i class="fa-solid fa-user"></i><span>Mi Perfil</span></a>
-                <a href="pedidos.html"><i class="fa-solid fa-box"></i><span>Mis Pedidos</span></a>
-                <a href="favoritos.html"><i class="fa-solid fa-heart"></i><span>Favoritos</span></a>
-                <a href="#" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i><span>Cerrar Sesión</span></a>
+            <?php else: ?>
+              <div class="guest-links" id="guestLinks">
+                <div class="dropdown-header">
+                  <i class="fa-solid fa-user-circle"></i>
+                  <h3>Bienvenido</h3>
+                  <p>Inicia sesión o regístrate</p>
+                </div>
+
+                <div class="dropdown-links">
+                  <a href="login.php"><i class="fa-solid fa-right-to-bracket"></i><span>Iniciar Sesión</span></a>
+                  <a href="Registro.php"><i class="fa-solid fa-user-plus"></i><span>Registrarse</span></a>
+                </div>
               </div>
-            </div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="hero-productos">
     <div class="hero-content-productos">
       <h1>Catálogo de Productos</h1>
@@ -94,7 +100,6 @@ include("includes/conexion.php");
     </div>
   </section>
 
-  <!-- FILTROS -->
   <section class="filtros-section">
     <div class="filtros">
       <button class="filtro-btn active" data-filter="todos">Todos</button>
@@ -106,7 +111,6 @@ include("includes/conexion.php");
     </div>
   </section>
 
-  <!-- PRODUCTOS -->
   <section class="productos-container">
     <div class="productos-grid" id="productosGrid">
       <?php
@@ -144,7 +148,6 @@ include("includes/conexion.php");
 
 
 
-  <!-- CARRITO -->
   <div class="cart-overlay" id="cartOverlay"></div>
   <aside class="cart-sidebar" id="cartSidebar">
     <div class="cart-header">
@@ -177,8 +180,6 @@ include("includes/conexion.php");
     © 2025 Chic Royale - Todos los derechos reservados 💄
   </footer>
 
-  <!-- FILTRO DE PRODUCTOS -->
-  <!-- FILTRO DE PRODUCTOS -->
   <script>
     document.querySelectorAll('.filtro-btn').forEach(btn => {
       btn.addEventListener('click', function() {
@@ -193,7 +194,6 @@ include("includes/conexion.php");
     });
   </script>
 
-  <!-- USUARIO -->
   <script>
     const userToggle = document.getElementById("userToggle");
     const dropdownMenu = document.getElementById("dropdownMenu");
@@ -238,7 +238,6 @@ include("includes/conexion.php");
     checkLoginStatus();
   </script>
 
-   <!-- ⚠️ 1️⃣ Primero definimos los productos y los hacemos globales -->
   <script>
     window.productos = [
       <?php
@@ -251,16 +250,14 @@ include("includes/conexion.php");
           precio: " . $producto['precio'] . ",
           imagen: 'uploads/" . $producto['imagen'] . "',
           categoria: '" . $producto['categoria'] . "'
-        },"; 
+        },";
       }
       ?>
     ];
   </script>
 
-  <!-- ⚠️ 2️⃣ Cargamos cart.js una sola vez -->
   <script src="js/cart.js" defer></script>
 
-  <!-- ⚠️ 3️⃣ Agregamos los eventos después -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll(".add-to-cart-btn").forEach(btn => {
@@ -280,4 +277,5 @@ include("includes/conexion.php");
     });
   </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,13 +37,12 @@
           <label for="email">Correo Electrónico</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-envelope"></i>
-            <input 
-              type="email" 
-              id="email" 
-              name="email" 
+            <input
+              type="email"
+              id="email"
+              name="email"
               placeholder="tu@email.com"
-              required
-            />
+              required />
           </div>
         </div>
 
@@ -50,13 +50,12 @@
           <label for="password">Contraseña</label>
           <div class="input-wrapper">
             <i class="fa-solid fa-lock"></i>
-            <input 
-              type="password" 
-              id="password" 
-              name="password" 
+            <input
+              type="password"
+              id="password"
+              name="password"
               placeholder="••••••••"
-              required
-            />
+              required />
           </div>
         </div>
 
@@ -143,41 +142,42 @@
   </script>
 
   <script>
-  const loginForm = document.getElementById('loginForm');
-  const messageDiv = document.getElementById('message');
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('message');
 
-  function showMessage(text, type) {
-    messageDiv.textContent = text;
-    messageDiv.className = `message ${type} show`;
-    setTimeout(() => messageDiv.classList.remove('show'), 4000);
-  }
-
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(loginForm);
-
-    try {
-      const response = await fetch('./login-dos.php', {
-        method: 'POST',
-        body: formData
-      });
-
-      const data = await response.json();
-
-      if (data.status === 'success') {
-        showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo...', 'success');
-        setTimeout(() => window.location.href = 'index.php', 1500);
-      } else {
-        showMessage('❌ ' + (data.message || 'Error al iniciar sesión'), 'error');
-      }
-    } catch (error) {
-      showMessage('❌ Error de conexión con el servidor', 'error');
-      console.error(error);
+    function showMessage(text, type) {
+      messageDiv.textContent = text;
+      messageDiv.className = `message ${type} show`;
+      setTimeout(() => messageDiv.classList.remove('show'), 4000);
     }
-  });
-</script>
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(loginForm);
+
+      try {
+        const response = await fetch('./login-dos.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          showMessage('✅ ¡Inicio de sesión exitoso! Redirigiendo...', 'success');
+          setTimeout(() => window.location.href = 'index.php', 1500);
+        } else {
+          showMessage('❌ ' + (data.message || 'Error al iniciar sesión'), 'error');
+        }
+      } catch (error) {
+        showMessage('❌ Error de conexión con el servidor', 'error');
+        console.error(error);
+      }
+    });
+  </script>
 
 
 </body>
+
 </html>

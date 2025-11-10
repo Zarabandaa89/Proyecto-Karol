@@ -1,5 +1,5 @@
 <?php
-include "../includes/conexion.php"; // Usa tu conexión
+include "../includes/conexion.php"; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['name'];
@@ -7,7 +7,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono = $_POST['phone'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Verificar si el correo ya existe
     $check = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
     $check->bind_param("s", $email);
     $check->execute();
@@ -18,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insertar usuario nuevo
     $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, telefono, password) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $nombre, $email, $telefono, $password);
 
@@ -31,4 +29,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
     $conn->close();
 }
-?>

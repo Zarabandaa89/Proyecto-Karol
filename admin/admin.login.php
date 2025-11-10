@@ -83,7 +83,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
-    <!-- Sección de productos -->
     <div class="admin-section" id="productosSection">
       <div class="section-header">
         <h2>Gestión de Productos</h2>
@@ -115,7 +114,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
-    <!-- Sección de usuarios -->
     <div class="admin-section" id="usuariosSection" style="display:none;">
       <div class="section-header">
         <h2>Lista de Usuarios Registrados</h2>
@@ -141,7 +139,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       </div>
     </div>
 
-    <!-- NUEVA SECCIÓN DE PEDIDOS -->
     <div class="admin-section" id="pedidosSection" style="display:none;">
       <div class="section-header">
         <h2>Lista de Pedidos</h2>
@@ -171,7 +168,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
     </div>
   </main>
 
-  <!-- Modal de productos -->
   <div class="modal" id="productoModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -240,7 +236,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
   <script>
     let editandoId = null;
 
-    // ================== PRODUCTOS ==================
     function cargarProductos() {
       fetch("productos-crud.php", {
           method: "POST",
@@ -276,7 +271,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         .catch(err => console.error("Error cargarProductos:", err));
     }
 
-    // ================== USUARIOS ==================
     function cargarUsuariosCount() {
       fetch("usuarios-crud.php", {
           method: "POST",
@@ -318,7 +312,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         .catch(err => console.error("Error cargarListaUsuarios:", err));
     }
 
-    // ================== PEDIDOS ==================
     function cargarPedidos() {
       fetch("pedidos-crud.php", {
           method: "POST",
@@ -353,7 +346,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
 
 
 
-    // ================== MODAL CRUD ==================
     function openModal() {
       editandoId = null;
       document.getElementById("productoForm").reset();
@@ -440,7 +432,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       setTimeout(() => msg.classList.remove("show"), 3000);
     }
 
-    // ================== MENÚ ==================
     document.querySelectorAll(".menu-admin a").forEach(link => {
       link.addEventListener("click", e => {
         e.preventDefault();
@@ -464,7 +455,6 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       });
     });
 
-    // ================== INICIAL ==================
     cargarProductos();
     cargarUsuariosCount();
     cargarPedidos();

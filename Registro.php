@@ -9,13 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $phone = trim($_POST['phone']);
   $password = $_POST['password'];
 
-  // Validar campos obligatorios
   if (empty($name) || empty($email) || empty($password)) {
     echo json_encode(["status" => "error", "message" => "❌ Faltan campos obligatorios"]);
     exit;
   }
 
-  // Verificar si el correo ya está registrado
   $check = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
   $check->bind_param("s", $email);
   $check->execute();
@@ -28,10 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
-  // Encriptar contraseña
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-  // Insertar nuevo usuario
   $stmt = $conn->prepare("INSERT INTO usuarios (nombre, email, telefono, password, fecha_registro) VALUES (?, ?, ?, ?, NOW())");
   $stmt->bind_param("ssss", $name, $email, $phone, $hashedPassword);
 

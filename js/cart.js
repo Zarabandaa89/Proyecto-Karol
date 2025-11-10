@@ -1,6 +1,5 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// Espera hasta que productos esté disponible antes de permitir usarlo
 function waitForProductos(callback) {
   if (typeof window.productos !== "undefined" && Array.isArray(window.productos)) {
     callback();

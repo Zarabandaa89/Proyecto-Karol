@@ -64,7 +64,6 @@
       </div>
     </div>
 
-    <!-- 🔹 Recuperar contraseña -->
     <div class="login-box" id="recoverBox" style="display:none;">
       <div class="login-header">
         <i class="fa-solid fa-lock"></i>
@@ -109,7 +108,6 @@
       setTimeout(() => messageDiv.classList.remove('show'), 4000);
     }
 
-    // 🔹 LOGIN PHP
     loginForm.addEventListener('submit', async function(e) {
       e.preventDefault();
       const formData = new FormData(loginForm);
@@ -139,7 +137,6 @@
       }
     });
 
-    // 🔹 Recuperación de contraseña
     forgotPasswordLink.addEventListener('click', (e) => {
       e.preventDefault();
       loginBox.style.display = 'none';
