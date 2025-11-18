@@ -72,4 +72,34 @@ switch ($accion) {
 
     echo ($conn->query($sql)) ? "success" : "error";
     break;
+      case "eliminar":
+    $id = isset($_POST['id']) ? intval($_POST['id']) : 0;
+    if ($id > 0) {
+      $stmt = $conn->prepare("SELECT imagen FROM productos_1 WHERE id = ?");
+      $stmt->bind_param('i', $id);
+      $stmt->execute();
+      $res = $stmt->get_result();
+      $imagen = '';
+      if ($row = $res->fetch_assoc()) {
+        $imagen = $row['imagen'];
+      }
+      $stmt->close();
+
+      $stmtDel = $conn->prepare("DELETE FROM productos_1 WHERE id = ?");
+      $stmtDel->bind_param('i', $id);
+      $ok = $stmtDel->execute();
+      $stmtDel->close();
+
+      if ($ok && !empty($imagen)) {
+        $rutaImagen = __DIR__ . '/../uploads/' . $imagen;
+        if (is_file($rutaImagen)) {
+          @unlink($rutaImagen);
+        }
+      }
+
+      echo $ok ? "success" : "error";
+    } else {
+      echo "error";
+    }
+    break;
 }
