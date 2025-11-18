@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $metodo = $_POST['metodo'] ?? '';
     $comentarios = $_POST['comentarios'] ?? '';
     $total = $_POST['total'] ?? 0;
-    $productos = $_POST['productos'] ?? '[]'; 
+    $productos = $_POST['productos'] ?? '[]';
 
     $sql = "INSERT INTO ventas (nombre_cliente, email_cliente, direccion, metodo_pago, comentarios, total, productos)
             VALUES (?, ?, ?, ?, ?, ?, ?)";

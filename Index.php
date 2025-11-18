@@ -131,26 +131,45 @@ include "includes/conexion.php";
   </section>
 
   <section class="categorias-section">
-    <h2 class="titulo-categorias">💄 Elige una categoría 💋</h2>
-    <div class="categorias">
-      <div class="categoria">
-        <div class="categoria-imagen"> <img src="imagenes/Labios.png" alt="Labios" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-lips\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
-        <p>Labios</p>
+  <h2 class="titulo-categorias">💄 Elige una categoría 💋</h2>
+
+  <div class="categorias">
+
+    <a href="productos.php?categoria=labios" class="categoria">
+      <div class="categoria-imagen">
+        <img src="imagenes/Labios.png" alt="Labios"
+             onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-lips\' style=\'font-size:80px;color:#ff69b4;\'></i>'">
       </div>
-      <div class="categoria">
-        <div class="categoria-imagen"> <img src="imagenes/Ojos.png" alt="Ojos" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-eye\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
-        <p>Ojos</p>
+      <p>Labios</p>
+    </a>
+
+    <a href="productos.php?categoria=ojos" class="categoria">
+      <div class="categoria-imagen">
+        <img src="imagenes/Ojos.png" alt="Ojos"
+             onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-eye\' style=\'font-size:80px;color:#ff69b4;\'></i>'">
       </div>
-      <div class="categoria">
-        <div class="categoria-imagen"> <img src="imagenes/Piel.png" alt="Piel" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-spa\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
-        <p>Piel</p>
+      <p>Ojos</p>
+    </a>
+
+    <a href="productos.php?categoria=piel" class="categoria">
+      <div class="categoria-imagen">
+        <img src="imagenes/Piel.png" alt="Piel"
+             onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-spa\' style=\'font-size:80px;color:#ff69b4;\'></i>'">
       </div>
-      <div class="categoria">
-        <div class="categoria-imagen"> <img src="imagenes/Mejillas.png" alt="Mejillas" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-face-smile\' style=\'font-size:80px;color:#ff69b4;\'></i>'"> </div>
-        <p>Mejillas</p>
+      <p>Piel</p>
+    </a>
+
+    <a href="productos.php?categoria=mejillas" class="categoria">
+      <div class="categoria-imagen">
+        <img src="imagenes/Mejillas.png" alt="Mejillas"
+             onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-face-smile\' style=\'font-size:80px;color:#ff69b4;\'></i>'">
       </div>
-    </div>
-  </section>
+      <p>Mejillas</p>
+    </a>
+
+  </div>
+</section>
+
 
   <section class="destacados">
     <h2>✨ Productos Destacados ✨</h2>

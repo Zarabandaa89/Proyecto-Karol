@@ -929,6 +929,8 @@ header {
   font-size: 36px;
   margin-bottom: 50px;
   font-weight: bold;
+  text-decoration: none;
+  color: inherit;
 }
 
 .categorias {
@@ -944,9 +946,17 @@ header {
   position: relative;
 }
 
+.categorias a {
+  text-decoration: none;
+  color: inherit;
+}
+
+
 .categoria:hover {
   transform: translateY(-15px);
 }
+
+
 
 .categoria-imagen {
   width: 160px;

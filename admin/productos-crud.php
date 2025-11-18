@@ -23,7 +23,7 @@ switch ($accion) {
     $descripcion = $_POST['descripcion'];
     $badge = $_POST['badge'];
     $destacado = isset($_POST['destacado']) ? intval($_POST['destacado']) : 0;
-
+    $stock = $_POST['stock'];
 
     $nombreImagen = "";
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
@@ -32,8 +32,10 @@ switch ($accion) {
       move_uploaded_file($_FILES["imagen"]["tmp_name"], $rutaDestino);
     }
 
-    $sql = "INSERT INTO productos_1 (nombre_producto, categoria, precio, descripcion, badge, destacado, imagen)
-            VALUES ('$nombre', '$categoria', '$precio', '$descripcion', '$badge', '$destacado', '$nombreImagen')";
+    $sql = "INSERT INTO productos_1 
+            (nombre_producto, categoria, precio, descripcion, badge, destacado, imagen, stock)
+            VALUES 
+            ('$nombre', '$categoria', '$precio', '$descripcion', '$badge', '$destacado', '$nombreImagen', '$stock')";
 
     echo ($conn->query($sql)) ? "success" : "error";
     break;
@@ -45,6 +47,7 @@ switch ($accion) {
     $precio = $_POST['precio'];
     $descripcion = $_POST['descripcion'];
     $badge = $_POST['badge'];
+    $stock = $_POST['stock'];
 
     $destacado = isset($_POST['destacado']) && $_POST['destacado'] == "1" ? 1 : 0;
 
@@ -62,7 +65,8 @@ switch ($accion) {
             precio='$precio',
             descripcion='$descripcion',
             badge='$badge',
-            destacado='$destacado'
+            destacado='$destacado',
+            stock='$stock'
             $updateImagen
             WHERE id = $id";
 

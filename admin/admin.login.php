@@ -201,6 +201,12 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
         </div>
 
         <div class="form-group">
+          <label>Stock *</label>
+          <input type="number" id="stock" required min="0" />
+        </div>
+
+
+        <div class="form-group">
           <label>Descripción *</label>
           <textarea id="descripcion" required></textarea>
         </div>
@@ -375,6 +381,7 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
           document.getElementById("categoria").value = p.categoria;
           document.getElementById("precio").value = p.precio;
           document.getElementById("descripcion").value = p.descripcion;
+          document.getElementById("stock").value = p.stock;
           document.getElementById("badge").value = p.badge ?? "";
           document.getElementById("destacado").checked = p.destacado == 1;
           document.getElementById("productoModal").classList.add("show");
@@ -406,6 +413,8 @@ $admin_nombre = $_SESSION['usuario_nombre'] ?? 'Administrador';
       formData.append("descripcion", document.getElementById("descripcion").value);
       formData.append("badge", document.getElementById("badge").value);
       formData.append("destacado", document.getElementById("destacado").checked ? "1" : "0");
+      formData.append("stock", document.getElementById("stock").value);
+
       const imagenFile = document.getElementById("imagen").files[0];
       if (imagenFile) formData.append("imagen", imagenFile);
       formData.append("accion", editandoId ? "editar" : "crear");

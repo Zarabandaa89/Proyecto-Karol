@@ -276,6 +276,37 @@ include "includes/conexion.php";
       });
     });
   </script>
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoria = urlParams.get("categoria");
+
+  if (categoria) {
+    // Activar botón
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.filter === categoria) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Filtrar productos
+    document.querySelectorAll('.producto-card').forEach(card => {
+      card.style.display = (card.dataset.categoria === categoria) ? 'block' : 'none';
+    });
+
+    // Scroll automático hacia los productos
+    setTimeout(() => {
+      document.querySelector('.productos-container').scrollIntoView({
+        behavior: "smooth"
+      });
+    }, 400);
+  }
+
+});
+</script>
+
 </body>
 
 </html>
